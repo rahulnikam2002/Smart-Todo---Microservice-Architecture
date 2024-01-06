@@ -1,6 +1,9 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const connectMongooseDB = require("./lib/mongoose/mongoose.connect");
+const {
+  validateAuthorizationToken
+} = require("./middlewares/secureRequestCalls/checkAuthorizationToken");
 require("dotenv").config();
 
 const app = express();
@@ -12,7 +15,7 @@ app.use(cookieParser());
 // Connecting to mongodb
 connectMongooseDB();
 
-app.get("/", (req, res) => {
+app.get("/", validateAuthorizationToken, (req, res) => {
   res.send("Hello, Working fine!!");
 });
 
