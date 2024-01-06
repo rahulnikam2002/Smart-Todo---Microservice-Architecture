@@ -1,0 +1,25 @@
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const connectMongooseDB = require("./lib/mongoose/mongoose.connect");
+require("dotenv").config();
+
+const app = express();
+
+// Regular middlewares
+app.use(express.json());
+app.use(cookieParser());
+
+// Connecting to mongodb
+connectMongooseDB();
+
+app.get("/", (req, res) => {
+  res.send("Hello, Working fine!!");
+});
+
+app.use("/api/auth", require("./routers/auth/auth"));
+
+app.listen(5000, () => {
+  console.log("Server started at port 5000");
+});
+
+module.exports = app;
