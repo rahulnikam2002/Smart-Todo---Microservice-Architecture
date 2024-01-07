@@ -65,13 +65,14 @@ exports.sendOTP = async (req, res) => {
 
     const cacheOTP = await redisClient
       .pipeline()
-      .set(`${userEmail}_OTP`, JSON.stringify({ ciperOTP }))
+      .set(`${userEmail}_OTP`, JSON.stringify({ userEmail, ciperOTP }))
       .expire(`${userEmail}_OTP`, 180)
       .exec();
 
     const hashEmail = await createBcryptHash(userEmail);
 
     return res.status(200).send({
+      otpSent: true,
       message: "OTP sent successfully",
       statusCode: 200,
       token: hashEmail.ciperText
@@ -79,6 +80,7 @@ exports.sendOTP = async (req, res) => {
   } catch (error) {
     const statusCode = error.statusCode || 500;
     res.status(statusCode).send({
+      otpSent: false,
       message: error.message,
       statusCode
     });
