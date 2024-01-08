@@ -12,10 +12,6 @@ const { sendMail } = require("../../utils/mails/sendMail");
  * @param {*} req
  * @param {*} res
  *
- *  is user aleady present? in Cache and then in database
- *  if no! -> register
- *  else -> res
- *
  */
 
 const checkInRedis = require("../../utils/redis/checkInRedis");
@@ -30,7 +26,7 @@ exports.signUp = async (req, res) => {
     if (isInRedis) {
       return res.status(409).send({
         message: "User aleady exist",
-        code: 409
+        statusCode: 409
       });
     }
 
@@ -51,7 +47,7 @@ exports.signUp = async (req, res) => {
     if (userData) {
       return res.status(404).send({
         message: "User aleady exist",
-        code: 409
+        statusCode: 409
       });
     }
 
@@ -105,10 +101,10 @@ exports.signUp = async (req, res) => {
     await sendMail(welcomeMailObject);
     return;
   } catch (error) {
-    const statusCode = error.code || 500;
+    const statusCode = error.statusCode || 500;
     res.status(statusCode).send({
       message: error.message || "Internal Server Error",
-      code: statusCode
+      statusCode: statusCode
     });
   }
 };

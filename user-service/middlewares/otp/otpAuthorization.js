@@ -42,7 +42,6 @@ exports.OTPAuthorization = async (req, res, next) => {
         message: "Unverified token",
         code: 401
       };
-
     return next();
   } catch (error) {
     const statusCode = error.statusCode || 500;

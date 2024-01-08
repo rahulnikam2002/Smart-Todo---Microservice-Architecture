@@ -1,4 +1,4 @@
-const { hash } = require("bcrypt");
+const { hash } = require("bcryptjs");
 
 exports.createBcryptHash = async (data) => {
   try {

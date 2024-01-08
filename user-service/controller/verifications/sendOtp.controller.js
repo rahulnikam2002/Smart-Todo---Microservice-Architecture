@@ -8,6 +8,15 @@ const checkInRedis = require("../../utils/redis/checkInRedis");
 exports.sendOTP = async (req, res) => {
   try {
     const { userEmail } = req.body;
+    console.log("Hello inside", userEmail);
+
+    // const { value, error } = await checkInRedis(userEmail);
+
+    // if (value)
+    //   throw {
+    //     message: "User already exist",
+    //     statusCode: 409
+    //   };
 
     const redisKey = `${userEmail}_OTP`;
 
@@ -25,10 +34,10 @@ exports.sendOTP = async (req, res) => {
       };
 
     if (redisValue) {
-      return res.status(409).send({
-        message: "OTP has already sent",
+      throw {
+        message: "OTP Already sent!",
         statusCode: 409
-      });
+      };
     }
 
     const {

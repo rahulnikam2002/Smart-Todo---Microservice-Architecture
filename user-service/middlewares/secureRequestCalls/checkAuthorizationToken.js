@@ -14,6 +14,7 @@ exports.validateAuthorizationToken = (req, res, next) => {
   try {
     // Extract the Bearer token from the Authorization header
     const bearerToken = req.headers.authorization;
+    // console.log(bearerToken)
 
     // Check if the Authorization header or Bearer token is missing
     if (!bearerToken || !bearerToken.startsWith("Bearer ")) {
@@ -39,6 +40,7 @@ exports.validateAuthorizationToken = (req, res, next) => {
 
     // Check if the token verification was successful
     if (!isError) {
+      console.log("Stage 2 clear")
       return next();
     } else {
       // If verification failed, throw an error
