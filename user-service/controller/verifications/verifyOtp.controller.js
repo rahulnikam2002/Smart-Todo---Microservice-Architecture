@@ -1,7 +1,7 @@
 const redisClient = require("../../lib/redis/redis.connect");
 const { createBcryptHash } = require("../../utils/Auth/Bcrypt/createHash");
 const { verifyBcryptHash } = require("../../utils/Auth/Bcrypt/verifyHash");
-const checkInRedis = require("../../utils/redis/checkInRedis");
+const {checkInRedis} = require("../../utils/redis/checkInRedis");
 
 /**
  * Verifies the OTP for a user, deletes OTP from Redis upon successful verification,

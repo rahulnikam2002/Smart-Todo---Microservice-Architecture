@@ -14,7 +14,7 @@ const { sendMail } = require("../../utils/mails/sendMail");
  *
  */
 
-const checkInRedis = require("../../utils/redis/checkInRedis");
+const { checkInRedis } = require("../../utils/redis/checkInRedis");
 
 exports.signUp = async (req, res) => {
   try {

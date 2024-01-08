@@ -1,6 +1,6 @@
 const redisClient = require("../../lib/redis/redis.connect");
 
-const checkInRedis = async (key) => {
+exports.checkInRedis = async (key) => {
   try {
     if (!key) {
       throw {
@@ -25,5 +25,3 @@ const checkInRedis = async (key) => {
     };
   }
 };
-
-module.exports = checkInRedis;

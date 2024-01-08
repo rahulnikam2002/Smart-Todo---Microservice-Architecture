@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { controller } = require("../../controller/exports");
+const { verifyJWTMiddleware } = require("../../middlewares/auth/verifyJWT");
 const { OTPAuthorization } = require("../../middlewares/otp/otpAuthorization");
 const {
   rateLimiterFunctions
@@ -13,6 +14,9 @@ const {
 } = require("../../middlewares/secureRequestCalls/checkUserToken");
 const { validation } = require("../../middlewares/validation/validation");
 const { emailSchema } = require("../../utils/validation/schemas/email.vschema");
+const {
+  passwordSchema
+} = require("../../utils/validation/schemas/password.vschema");
 const signupSchema = require("../../utils/validation/schemas/signup.vschema");
 
 router.post(
@@ -42,8 +46,9 @@ router.post(
 router.post(
   "/signin",
   rateLimiterFunctions.signIn_RateLimiter,
-  // validation,
   validateAuthorizationToken,
+  verifyJWTMiddleware,
+  validation(passwordSchema),
   controller.signIn
 );
 
