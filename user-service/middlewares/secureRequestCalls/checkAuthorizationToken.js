@@ -14,7 +14,6 @@ exports.validateAuthorizationToken = (req, res, next) => {
   try {
     // Extract the Bearer token from the Authorization header
     const bearerToken = req.headers.authorization;
-    // console.log(bearerToken)
 
     // Check if the Authorization header or Bearer token is missing
     if (!bearerToken || !bearerToken.startsWith("Bearer ")) {
@@ -37,10 +36,10 @@ exports.validateAuthorizationToken = (req, res, next) => {
 
     // Verify the token using the verifyJWT utility function
     const { value, isError, error } = verifyJWT(token, process.env.AUTHORIZATION_SECRET_KEY);
+    console.log({value})
 
     // Check if the token verification was successful
     if (!isError) {
-      console.log("Stage 2 clear")
       return next();
     } else {
       // If verification failed, throw an error

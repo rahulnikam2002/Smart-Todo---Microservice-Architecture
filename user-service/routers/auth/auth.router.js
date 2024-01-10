@@ -22,7 +22,6 @@ const signupSchema = require("../../utils/validation/schemas/signup.vschema");
 router.post(
   "/send/otp",
   rateLimiterFunctions.sendOtp_RateLimiter,
-  // validation(emailSchema),
   validateAuthorizationToken,
   controller.sendOTP
 );

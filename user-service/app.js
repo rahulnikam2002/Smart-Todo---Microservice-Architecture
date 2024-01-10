@@ -22,8 +22,8 @@ app.get("/", validateAuthorizationToken, (req, res) => {
 app.use("/api/auth", require("./routers/auth/auth.router"));
 app.use("/api/check", require("./routers/check/check.router"))
 
-// app.listen(5000, () => {
-//   console.log("Server started at port 5000");
-// });
+app.listen(5000, () => {
+  console.log("Server started at port 5000");
+});
 
 module.exports = app;

@@ -5,43 +5,52 @@ const { generateOTP } = require("../../utils/generators/otp/otp.generate");
 const { sendMail } = require("../../utils/mails/sendMail");
 const { checkInRedis } = require("../../utils/redis/checkInRedis");
 
-/**
- * Controller function to send OTP to a user's email.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Object} - JSON response indicating OTP status.
- */
-
 exports.sendOTP = async (req, res) => {
   try {
     const { userEmail } = req.body;
 
-    // Check if OTP has already been sent for the given email
+    // const { value, error } = await checkInRedis(userEmail);
+
+    // if (value)
+    //   throw {
+    //     message: "User already exist",
+    //     statusCode: 409
+    //   };
+
     const redisKey = `${userEmail}_OTP`;
-    const { value: redisValue, isError: isRedisError } = await checkInRedis(redisKey);
+
+    const {
+      value: redisValue,
+      isError: isRedisError,
+      error: redisError
+    } = await checkInRedis(redisKey);
 
     if (isRedisError)
       throw {
-        message: "Something went wrong with the cache"
+        message: "Something went wrong with cache"
       };
 
     if (redisValue) {
       throw {
-        message: "OTP already sent!",
+        message: "OTP Already sent!",
         statusCode: 409
       };
     }
 
-    // Generate OTP
-    const { cipherOTP, OTP, error: otpError, isError: generateOTPError } = await generateOTP(6);
+    const {
+      ciperOTP,
+      OTP,
+      error: otpError,
+      isError: generateOTPError
+    } = await generateOTP(6);
+
+    console.log({ otpError });
 
     if (generateOTPError)
       throw {
         message: "Error while generating OTP"
       };
 
-    // Prepare mail options for sending OTP
     const mailOptions = {
       from: "Rahul Nikam <noreply@bookingbreeze.in>",
       to: [userEmail],
@@ -49,33 +58,34 @@ exports.sendOTP = async (req, res) => {
       html: OTPtemplate(OTP)
     };
 
-    // Send OTP via email
-    const { value: sendMailData, isError: isErrorInSendMail } = await sendMail(mailOptions);
+    const {
+      value: sendMaildata,
+      isError: isErrorInSendMail,
+      error: sendMailError
+    } = await sendMail(mailOptions);
 
     if (isErrorInSendMail)
       throw {
-        message: "Mail not sent"
+        message: "Mail not send"
       };
 
-    // Cache the OTP in Redis
     const cacheOTP = await redisClient
       .pipeline()
-      .set(redisKey, JSON.stringify({ userEmail, cipherOTP }))
-      .expire(redisKey, 180)
+      .set(`${userEmail}_OTP`, JSON.stringify({ userEmail, ciperOTP }))
+      .expire(`${userEmail}_OTP`, 180)
       .exec();
 
-    // Hash the user's email for generating a token
     const hashEmail = await createBcryptHash(userEmail);
 
-    return res.status(200).json({
+    return res.status(200).send({
       otpSent: true,
       message: "OTP sent successfully",
       statusCode: 200,
-      token: hashEmail.cipherText
+      token: hashEmail.ciperText
     });
   } catch (error) {
     const statusCode = error.statusCode || 500;
-    res.status(statusCode).json({
+    res.status(statusCode).send({
       otpSent: false,
       message: error.message,
       statusCode
