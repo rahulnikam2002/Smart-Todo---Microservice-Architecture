@@ -9,7 +9,6 @@ const verifyJWT = require("../../utils/Auth/JWT/verifyJWT");
  * @returns {void} - Calls the next middleware or returns a response with an error status.
  */
 
-
 exports.validateAuthorizationToken = (req, res, next) => {
   try {
     // Extract the Bearer token from the Authorization header
@@ -23,6 +22,7 @@ exports.validateAuthorizationToken = (req, res, next) => {
       };
     }
 
+
     // Extract the token from the Bearer token string
     const token = bearerToken.split(" ")[1];
 
@@ -34,9 +34,15 @@ exports.validateAuthorizationToken = (req, res, next) => {
       };
     }
 
+    console.log({token})
+
+
     // Verify the token using the verifyJWT utility function
-    const { value, isError, error } = verifyJWT(token, process.env.AUTHORIZATION_SECRET_KEY);
-    console.log({value})
+    const { value, isError, error } = verifyJWT(
+      token,
+      process.env.AUTHORIZATION_SECRET_KEY
+    );
+    console.log({ value, isError, error });
 
     // Check if the token verification was successful
     if (!isError) {

@@ -10,6 +10,7 @@ const verifyJWT = require("../../utils/Auth/JWT/verifyJWT");
 
 exports.authorizeUserToken = (req, res) => {
   try {
+    console.log("You are here")
     // Extracting JWT token from the request body
     const { jwtToken } = req.body;
 

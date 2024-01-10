@@ -1,0 +1,19 @@
+
+service: smart-todo-todo
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 2048
+  timeout: 15 
+  stage: dev
+  region: ap-south-1
+
+functions:
+  hello:
+    handler: handler.startup
+    events:
+      - http: ANY /{proxy+}
+      - http: ANY /
+      

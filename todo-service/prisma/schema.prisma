@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Todos [icon: check-square] {
+//   isExpirable boolen req
+//   expireAt Date
+// }
+
+model Todos {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String    @db.ObjectId
+  todoTitle       String
+  todoDescription String?
+  category        String[]
+  isExpirable     Boolean
+  expireAt        DateTime
+  Projects        Projects? @relation(fields: [projectsId], references: [id])
+  projectsId      String?   @db.ObjectId
+}
+
+model Projects {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String   @db.ObjectId
+  projectName        String
+  porjectDescription String?
+  expireAt           DateTime
+  todos              Todos[]
+}
