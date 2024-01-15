@@ -31,7 +31,6 @@ import { BottomSheet } from "../../../Components/BottomSheet/BottomSheetWrapper"
 import { Icon } from "@rneui/base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import { AnimatePresence, MotiView } from "moti";
 
 export const HomeScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -63,16 +62,16 @@ export const HomeScreen = () => {
     const handleTodoScreenRedirection = (type) => {
         setSnapToIndex(-1);
         if (type === "singleTodo") {
-            return navigation.navigate("CreateSingleTask", { method: "newTask" });
+            return navigation.navigate("CreateSingleTask");
         }
-        return navigation.navigate("CreateProject");
+        return;
     };
 
     return (
         <Animated.View style={[viewStyles, styles.homeMain]}>
             <StatusBar backgroundColor={Colors.bgBlack} />
             <HomeHeader navigation={navigation}></HomeHeader>
-            <View style={{ marginBottom: 5, paddingHorizontal: 15 }}>
+            <View style={{ marginBottom: 5, paddingHorizontal: 10 }}>
                 <View style={{ marginTop: 15, marginBottom: 8 }}>
                     <SmallText>
                         Hi, <SmallText sx={{ fontFamily: fonts.Montserrat[500] }}>Rahul</SmallText> ❤️
@@ -85,104 +84,12 @@ export const HomeScreen = () => {
                 />
             </View>
 
-            <AnimatePresence exitBeforeEnter>
-                <MotiView
-                    from={{
-                        opacity: 0,
-                        scale: 0.5
-                    }}
-                    animate={{
-                        opacity: 1,
-                        scale: 1
-                    }}
-                    exit={{
-                        opacity: 0,
-                        scale: 0.9
-                    }}
-                    style={{ paddingHorizontal: 15 }}>
-                    <TaskProgressTracker percentage={76} />
-                </MotiView>
-            </AnimatePresence>
+            <TouchableOpacity activeOpacity={0.1}>
+                <SmallHeadingText>Hellon k akSH fl asdklf labfl asd fhlsa ksa d</SmallHeadingText>
+            </TouchableOpacity>
 
-            <View
-                style={
-                    snapToIndex !== -1
-                        ? {
-                              position: "absolute",
-                              top: 0,
-                              right: 0,
-                              width: "100%"
-                          }
-                        : null
-                }>
-                <BottomSheet
-                    snaps={["45", "45"]}
-                    snapToIndex={snapToIndex}
-                    setSnapToIndex={setSnapToIndex}>
-                    <BottomSheetHeader
-                        closeBottomSheet={setSnapToIndex}
-                        heading="What you want to do?"
-                    />
-
-                    <View style={styles.bottomSheetBody}>
-                        <TouchableOpacity
-                            onPress={() => handleTodoScreenRedirection("singleTodo")}
-                            activeOpacity={0.5}
-                            style={[styles.bottomSheetBodyBtns, { backgroundColor: Colors.bgBlack }]}>
-                            <MediumText
-                                color={Colors.white}
-                                sx={{ fontFamily: fonts.Montserrat[500] }}>
-                                Create single task
-                            </MediumText>
-
-                            <View>
-                                <Icon
-                                    type="ionicon"
-                                    name="chevron-forward-outline"
-                                    color={Colors.white}
-                                />
-                            </View>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={() => handleTodoScreenRedirection("project")}
-                            activeOpacity={0.5}
-                            style={[styles.bottomSheetBodyBtns, { backgroundColor: Colors.bgBlack }]}>
-                            <MediumText
-                                color={Colors.white}
-                                sx={{ fontFamily: fonts.Montserrat[500] }}>
-                                Track new project
-                            </MediumText>
-                            <View>
-                                <Icon
-                                    type="ionicon"
-                                    name="chevron-forward-outline"
-                                    color={Colors.white}
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                </BottomSheet>
-            </View>
-
-            {snapToIndex === -1 && (
-                <View style={styles.speedDail}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            console.log(1);
-                            handleOpenBottomSheet();
-                        }}>
-                        <Icon
-                            type="ionicon"
-                            name="add-outline"
-                            color={Colors.white}
-                            size={30}
-                        />
-                    </TouchableOpacity>
-                </View>
-            )}
-            <View style={{ position: "absolute", bottom: 0, width: "100%" }}>
-                <BottomTabs />
+            <View style={{ paddingHorizontal: 10 }}>
+                <TaskProgressTracker percentage={76} />
             </View>
         </Animated.View>
     );
@@ -241,33 +148,33 @@ const styles = StyleSheet.create({
     },
     lastSection: {
         marginBottom: 80
-    },
-    bottomSheetBody: { width: "100%", paddingHorizontal: 20, paddingVertical: 10 },
-    bottomSheetBodyBtns: {
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        marginTop: 10,
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between"
-    },
-    speedDail: {
-        backgroundColor: Colors.bgBlack,
-        alignSelf: "flex-start",
-        height: 55,
-        width: 55,
-        borderRadius: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "absolute",
-        bottom: 70,
-        right: 20,
-        zIndex: 10
     }
+    // bottomSheetBody: { width: "100%", paddingHorizontal: 20, paddingVertical: 10 },
+    // bottomSheetBodyBtns: {
+    //     paddingVertical: 10,
+    //     paddingHorizontal: 10,
+    //     borderRadius: 5,
+    //     marginTop: 10,
+    //     width: "100%",
+    //     display: "flex",
+    //     flexDirection: "row",
+    //     alignItems: "center",
+    //     justifyContent: "space-between"
+    // }
+    // speedDail: {
+    //     backgroundColor: Colors.bgBlack,
+    //     alignSelf: "flex-start",
+    //     height: 55,
+    //     width: 55,
+    //     borderRadius: 50,
+    //     display: "flex",
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    //     position: "absolute",
+    //     bottom: 20,
+    //     right: 20
+    // zIndex: 10
+    // }
 });
 
 /**
@@ -350,3 +257,115 @@ const styles = StyleSheet.create({
                     </BottomSheet>
                 </View> 
  */
+
+/**
+ * @responsibility: This screen is responsible for showing Restautant and Dishes Tabs and their components.
+ */
+
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { TabView, SceneMap, Route } from "react-native-tab-view";
+import { useNavigation } from "@react-navigation/native";
+import { Colors } from "../../../utils/constants/colors/colors";
+import { fonts } from "../../../utils/constants/fonts/fonts";
+import { DisplayAllTodos } from "./allTodos.screen";
+import { CompletedTasks } from "./sections/completedTasks.screen";
+import { ExpiredTasks } from "./sections/expiredTasks.screen";
+
+//* Mapping Tabs with Screens
+// const renderScene = SceneMap({
+//     pendingTab: DisplayAllTodos,
+//     doneTab: CompletedTasks,
+//     expiredTab: ExpiredTasks
+// });
+
+const renderScene = ({ route }) => {
+    switch (route.key) {
+        case "pendingTab":
+            return <DisplayAllTodos />;
+        case "doneTab":
+            return <CompletedTasks />;
+        case "expiredTab":
+            return <ExpiredTasks />;
+        default:
+            return null;
+    }
+};
+
+export const AllTodosScreen = () => {
+    const navigation = useNavigation();
+    const layout = useWindowDimensions();
+    const [index, setIndex] = useState(0);
+
+    //* Creating Top Tabs
+    const [routes] = useState([
+        { key: "pendingTab", title: "Pending Tasks" },
+        { key: "doneTab", title: "Completed" },
+        { key: "expiredTab", title: "Expired" }
+    ]);
+
+    useEffect(() => {
+        renderScene();
+    }, [routes]);
+
+    //* Tab bar header component and stylings
+    const TabBarHeaders = (props) => {
+        return (
+            <View style={styles.tabBar}>
+                {props.navigationState.routes.map((route, i) => {
+                    return (
+                        <TouchableOpacity
+                            style={styles.tabItem}
+                            onPress={() => setIndex(i)}>
+                            <Text
+                                style={[
+                                    i == index
+                                        ? {
+                                              color: Colors.bgBlack,
+                                              borderBottomWidth: 2,
+                                              borderBottomColor: Colors.bgBlack,
+                                              fontFamily: fonts.Montserrat[500]
+                                          }
+                                        : { fontFamily: fonts.Montserrat[500] },
+                                    styles.tabBarTitles
+                                ]}>
+                                {route.title}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
+            </View>
+        );
+    };
+
+    return (
+        <View style={{ height: "100%" }}>
+            <TabView
+                renderTabBar={TabBarHeaders}
+                navigationState={{ index, routes }}
+                renderScene={(routes) => renderScene(routes)}
+                onIndexChange={(i) => setIndex(i)}
+                initialLayout={{ width: layout.width }}
+            />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    tabBar: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: Colors.white
+    },
+    tabItem: {
+        flex: 1,
+        alignItems: "center"
+    },
+    tabBarTitles: {
+        padding: 16,
+        textAlign: "center",
+        width: "100%",
+        fontSize: 12
+    }
+});
