@@ -4,36 +4,31 @@ const { PrismaClient, Prisma } = require("@prisma/client");
 // Create an instance of PrismaClient
 const prisma = new PrismaClient();
 
-/**
- * Create a new todo.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {Promise<void>} - A promise that resolves when the todo is created.
- */
-exports.createTodo = async (req, res) => {
+exports.updateTodoStatusToCompleted = async (req, res) => {
     try {
         // Extract relevant data from the request object
         const { userId } = req;
-        const { todoTitle, todoDescription, expireAt, category, isExpirable } = req.body;
+        const { taskIds } = req.body;
+
+        console.log("hello");
 
         // Add the todo data to the database using Prisma's create method
-        const addToDatabase = await prisma.todos.create({
+        const addToDatabase = await prisma.todos.updateMany({
             data: {
+                done: true
+            },
+            where: {
                 userId,
-                todoTitle,
-                todoDescription,
-                expireAt,
-                done: false,
-                isExpirable,
-                category
+                id: {
+                    in: taskIds
+                }
             }
         });
 
         // Send a successful response with the created todo
         return res.status(200).send({
-            message: "Task created",
-            isTaskCreated: true,
+            message: "Task completed",
+            isTaskCompleted: true,
             task: addToDatabase,
             statusCode: 200
         });

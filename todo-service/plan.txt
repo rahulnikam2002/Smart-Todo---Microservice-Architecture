@@ -1,0 +1,29 @@
+For REDIS:
+    todos:
+        key = userId_search_NAME (10 min)
+        key = userId_search_CATEGORY (10 min)
+        key = userId_search_DATE (10 min)
+
+    project:
+        key = userId_project
+
+
+    BRUTE_FORCE:
+    SEARCH: rahul name => rahulnikam => key = userId_todo_rahulnikam => results
+                                        DB = results => cache => key = userId_todo_rahulnikam => results
+
+    OPTIMIZED:
+    
+
+Req: 
+    get: 
+        Redis => userId_todo => return
+        DB => return
+
+    update
+        UPDATE redis => userId_todo
+        DB => compul.
+    POST
+        New todo:
+            db => compul
+            redis = new userId_todo

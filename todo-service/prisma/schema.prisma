@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  binaryTargets = ["rhel-openssl-1.0.x"]
+  provider      = "prisma-client-js"
 }
 
 datasource db {
@@ -10,17 +11,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Todos [icon: check-square] {
-//   isExpirable boolen req
-//   expireAt Date
-// }
-
 model Todos {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   userId          String    @db.ObjectId
   todoTitle       String
   todoDescription String?
   category        String[]
+  done            Boolean
   isExpirable     Boolean
   expireAt        DateTime
   Projects        Projects? @relation(fields: [projectsId], references: [id])
@@ -31,7 +28,8 @@ model Projects {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   userId             String   @db.ObjectId
   projectName        String
-  porjectDescription String?
+  projectDescription String?
+  category           String[]
   expireAt           DateTime
   todos              Todos[]
 }
