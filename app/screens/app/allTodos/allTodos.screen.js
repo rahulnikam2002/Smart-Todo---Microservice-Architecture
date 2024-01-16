@@ -225,6 +225,10 @@ export const DisplayAllTodos = () => {
                                 screenName={"CreateSingleTask"}
                                 query={{ method: "newTask" }}
                                 emptyFieldName={"Tasks"}
+                                text={"No tasks available at the moment. Create one and keep your productivity flowing! 👉👈"}
+                                imageURL={
+                                    "https://res.cloudinary.com/dyy7ynyzb/image/upload/v1705261288/Smart%20Todo%20Application/Icons/money_sdfrmv.png"
+                                }
                             />
                         )}
                     </AnimatePresence>

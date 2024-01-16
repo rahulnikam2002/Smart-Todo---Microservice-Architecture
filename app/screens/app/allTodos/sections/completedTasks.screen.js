@@ -183,9 +183,13 @@ export const CompletedTasks = () => {
                             />
                         ) : (
                             <EmptyScreen
-                                screenName={"CreateSingleTask"}
+                                screenName={"completed"}
                                 query={{ method: "newTask" }}
                                 emptyFieldName={"Tasks"}
+                                imageURL={
+                                    "https://res.cloudinary.com/dyy7ynyzb/image/upload/v1705346872/Smart%20Todo%20Application/Icons/done_eywwui.png"
+                                }
+                                text={"No completed tasks yet. Keep up the good work, and watch your accomplishments grow! 👏"}
                             />
                         )}
                     </AnimatePresence>

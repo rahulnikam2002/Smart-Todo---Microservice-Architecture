@@ -1,18 +1,16 @@
 {
-  "expo": {
-    "name": "app",
-    "slug": "app",
-    "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "android": {
-      "package": "com.plantmart.app"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "ef15f3b8-088d-4192-a230-df7997939116"
-      }
+    "expo": {
+        "name": "app",
+        "slug": "app",
+        "version": "1.0.0",
+        "assetBundlePatterns": ["**/*"],
+        "android": {
+            "package": "com.smarttodo.app"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "ef15f3b8-088d-4192-a230-df7997939116"
+            }
+        }
     }
-  }
 }

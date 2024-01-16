@@ -183,9 +183,13 @@ export const ExpiredTasks = () => {
                             />
                         ) : (
                             <EmptyScreen
-                                screenName={"CreateSingleTask"}
+                                screenName={"expired"}
                                 query={{ method: "newTask" }}
                                 emptyFieldName={"Tasks"}
+                                imageURL={
+                                    "https://res.cloudinary.com/dyy7ynyzb/image/upload/v1705347316/Smart%20Todo%20Application/Icons/alarm-clock_lpxze3.png"
+                                }
+                                text={"No expired tasks!. Stay on top of your schedule, and let's keep things timely! ⏰"}
                             />
                         )}
                     </AnimatePresence>

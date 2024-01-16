@@ -6,13 +6,36 @@ import { Colors } from "../../utils/constants/colors/colors";
 import { PieChar } from "../Charts/Pie/Pie.chart";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import { useContext, useEffect } from "react";
+import { getTodaysProgress } from "../../utils/helpers/analysis/progress";
+import { AuthContext } from "../../context/auth/auth.context";
 
 export const TaskProgressTracker = ({ percentage }) => {
+    const { getUserDetailsWithToken } = useContext(AuthContext);
     const currentDate = new Date();
     // Options for formatting the date
     const options = { month: "long", day: "numeric" };
     // Format the date as "mm dd"
     const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
+    const setUserTodaysProgess = async () => {
+        const { result: smartToken, userEmail } = await getUserDetails();
+        const userProgress = await getTodaysProgress(smartToken, userEmail);
+    };
+
+    const getUserDetails = async () => {
+        const details = await getUserDetailsWithToken();
+        if (!details) {
+            // setUserDetails(null);
+            logoutUser();
+            return;
+        }
+        return details;
+    };
+
+    useEffect(() => {
+        setUserTodaysProgess();
+    }, []);
 
     return (
         <View style={styles.main}>

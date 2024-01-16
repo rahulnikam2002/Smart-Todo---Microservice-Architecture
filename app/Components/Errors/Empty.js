@@ -4,30 +4,28 @@ import { TouchableButton } from "../Button/Button";
 import { fonts } from "../../utils/constants/fonts/fonts";
 import { useNavigation } from "@react-navigation/native";
 
-const ERROR_IMG = "https://res.cloudinary.com/dyy7ynyzb/image/upload/v1705261288/Smart%20Todo%20Application/Icons/money_sdfrmv.png";
-
-export const EmptyScreen = ({ screenName, emptyFieldName, query }) => {
+export const EmptyScreen = ({ screenName, query, imageURL, text }) => {
     const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: ERROR_IMG }}
+                source={{ uri: imageURL }}
                 width={150}
                 height={150}
                 resizeMode="contain"
             />
-            <MediumText sx={{ width: "85%", textAlign: "center", fontFamily: fonts.Montserrat[500] }}>
-                No {emptyFieldName} are available at the movement, You can create new one! 👉👈
-            </MediumText>
-            <View style={styles.btn}>
-                <TouchableButton
-                    onPress={() => navigation.navigate(screenName, query)}
-                    hidden={false}
-                    txtWidth={"100%"}
-                    btnWidth={"100%"}
-                    title={"Create new"}
-                />
-            </View>
+            <MediumText sx={{ width: "85%", textAlign: "center", fontFamily: fonts.Montserrat[500] }}>{text}</MediumText>
+            {screenName === "completed" || screenName === "expired" ? null : (
+                <View style={styles.btn}>
+                    <TouchableButton
+                        onPress={() => navigation.navigate(screenName, query)}
+                        hidden={false}
+                        txtWidth={"100%"}
+                        btnWidth={"100%"}
+                        title={"Create new"}
+                    />
+                </View>
+            )}
         </View>
     );
 };
