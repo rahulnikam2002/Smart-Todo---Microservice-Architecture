@@ -49,7 +49,7 @@ export const PieChar = ({ percentage = 91, innerRadius = 100 }) => {
                     top: "40%",
                     left: "35%"
                 }}>
-                {percentage}%
+                {percentage.toFixed(0)}%
             </MediumText>
         </View>
     );

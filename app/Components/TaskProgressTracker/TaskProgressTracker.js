@@ -1,4 +1,4 @@
-import { MotiText, MotiView } from "moti";
+import { MotiView } from "moti";
 import { MediumText, SmallText, SubHeadingText } from "../Text/Headings/Headings";
 import { StyleSheet, View } from "react-native";
 import { fonts } from "../../utils/constants/fonts/fonts";
@@ -6,12 +6,18 @@ import { Colors } from "../../utils/constants/colors/colors";
 import { PieChar } from "../Charts/Pie/Pie.chart";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getTodaysProgress } from "../../utils/helpers/analysis/progress";
 import { AuthContext } from "../../context/auth/auth.context";
+import { Skeleton } from "moti/skeleton";
+import { Spacer } from "../NavigationComponents/Drawer/CustomDrawer";
 
 export const TaskProgressTracker = ({ percentage }) => {
+    const [userTaskDetails, setUserTaskDetails] = useState();
     const { getUserDetailsWithToken } = useContext(AuthContext);
+
+    const navigation = useNavigation();
+
     const currentDate = new Date();
     // Options for formatting the date
     const options = { month: "long", day: "numeric" };
@@ -20,7 +26,9 @@ export const TaskProgressTracker = ({ percentage }) => {
 
     const setUserTodaysProgess = async () => {
         const { result: smartToken, userEmail } = await getUserDetails();
-        const userProgress = await getTodaysProgress(smartToken, userEmail);
+        const todaysDate = new Date().toISOString().split("T")[0];
+        const userProgress = await getTodaysProgress(smartToken, userEmail, todaysDate);
+        setUserTaskDetails(userProgress);
     };
 
     const getUserDetails = async () => {
@@ -34,8 +42,10 @@ export const TaskProgressTracker = ({ percentage }) => {
     };
 
     useEffect(() => {
-        setUserTodaysProgess();
-    }, []);
+        navigation.addListener("focus", () => {
+            setUserTodaysProgess();
+        });
+    }, [navigation]);
 
     return (
         <View style={styles.main}>
@@ -51,11 +61,23 @@ export const TaskProgressTracker = ({ percentage }) => {
                     <SubHeadingText sx={{ fontSize: 15, fontFamily: fonts.Montserrat[600] }}>Task Progress</SubHeadingText>
                 </View>
                 <View style={styles.taskCounter}>
-                    <MediumText
-                        color={Colors.lightBlack[1]}
-                        sx={{ fontSize: 13, fontFamily: fonts.Montserrat[500] }}>
-                        20/35 task completed
-                    </MediumText>
+                    {userTaskDetails ? (
+                        <MediumText
+                            color={Colors.lightBlack[1]}
+                            sx={{ fontSize: 13, fontFamily: fonts.Montserrat[500] }}>
+                            {userTaskDetails.completedTasks}/{userTaskDetails.toalTasks} task completed
+                        </MediumText>
+                    ) : (
+                        <MotiView>
+                            <Spacer height={5} />
+                            <Skeleton
+                                colorMode={"light"}
+                                height={10}
+                                radius={"square"}
+                                width={100}
+                            />
+                        </MotiView>
+                    )}
                 </View>
                 <View>
                     <View
@@ -77,7 +99,7 @@ export const TaskProgressTracker = ({ percentage }) => {
                     borderRadius: 10,
                     height: 120
                 }}>
-                <PieChar percentage={percentage} />
+                {userTaskDetails && <PieChar percentage={userTaskDetails.percentage} />}
             </View>
         </View>
     );

@@ -60,7 +60,7 @@ export const CreateSingleTask = () => {
             const dateString = selectedDate;
             const formattedDateString = dateString.replace(/\//g, "-");
             ISO_FORMAT = new Date(formattedDateString);
-            ISO_FORMAT = formatTime(ISO_FORMAT);
+            ISO_FORMAT = formatTime(ISO_FORMAT, "calendar");
         }
 
         setConfirmSelectedDate(ISO_FORMAT);

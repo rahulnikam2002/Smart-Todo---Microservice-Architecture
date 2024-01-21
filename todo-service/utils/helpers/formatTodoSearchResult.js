@@ -10,7 +10,7 @@
 exports.formartTodos = (searchResults) => {
     // Get the current date and time
     const todaysDate = new Date();
-
+    todaysDate.setHours(23, 59, 59, 999);
     // Arrays to store past and future todos
     const pastTodos = [];
     const futureTodos = [];
@@ -18,13 +18,16 @@ exports.formartTodos = (searchResults) => {
 
     for (let i = 0; i < searchResults.length; i++) {
         let currentTaskDate = new Date(searchResults[i].expireAt);
+        // currentTaskDate.setHours(0, 0, 0, 0);
+
+        console.log({ name: searchResults[i].todoTitle, currentTaskDate, todaysDate });
 
         if (searchResults[i].done) {
             console.log(true);
             completedTodos.push(searchResults[i]);
         } else if (currentTaskDate < todaysDate && !searchResults[i].done) {
             pastTodos.push(searchResults[i]);
-        } else if ((currentTaskDate > todaysDate || currentTaskDate === todaysDate) && !searchResults[i].done) {
+        } else if (currentTaskDate >= todaysDate && !searchResults[i].done) {
             futureTodos.push(searchResults[i]);
         }
     }
