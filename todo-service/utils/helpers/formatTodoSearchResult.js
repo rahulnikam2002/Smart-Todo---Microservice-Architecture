@@ -18,9 +18,9 @@ exports.formartTodos = (searchResults) => {
 
     for (let i = 0; i < searchResults.length; i++) {
         let currentTaskDate = new Date(searchResults[i].expireAt);
-        // currentTaskDate.setHours(0, 0, 0, 0);
+        // currentTaskDate.setHours(23, 59, 59, 999);
 
-        console.log({ name: searchResults[i].todoTitle, currentTaskDate, todaysDate });
+        console.log({ currentTaskDate, task: searchResults[i].todoTitle });
 
         if (searchResults[i].done) {
             console.log(true);

@@ -4,8 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
-import { TabView, SceneMap, Route } from "react-native-tab-view";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Colors } from "../../../utils/constants/colors/colors";
 import { fonts } from "../../../utils/constants/fonts/fonts";
 import { DisplayAllTodos } from "./allTodos.screen";
@@ -31,35 +30,41 @@ const renderScene = ({ route }) => {
     }
 };
 
-export const AllTodosScreen = () => (
-    <Tab.Navigator
-        screenOptions={{
-            lazy: true,
-            tabBarLabelStyle: { textTransform: "none", fontFamily: fonts.Montserrat[500] }
-        }}>
-        <Tab.Screen
-            name="pendingTasks"
-            options={{
-                title: "Pending"
-            }}
-            component={DisplayAllTodos}
-        />
-        <Tab.Screen
-            name="completedtasks"
-            options={{
-                title: "Completed"
-            }}
-            component={CompletedTasks}
-        />
-        <Tab.Screen
-            name="expiredTasks"
-            options={{
-                title: "Expired"
-            }}
-            component={ExpiredTasks}
-        />
-    </Tab.Navigator>
-);
+export const AllTodosScreen = () => {
+    const routes = useRoute();
+    const toIndex = routes.params;
+    console.log(toIndex);
+    return (
+        <Tab.Navigator
+            screenOptions={{
+                lazy: true,
+                tabBarLabelStyle: { textTransform: "none", fontFamily: fonts.Montserrat[500] }
+            }}>
+            <Tab.Screen
+                name="pendingTasks"
+                options={{
+                    title: "Pending"
+                }}
+                component={DisplayAllTodos}
+                initialParams={toIndex}
+            />
+            <Tab.Screen
+                name="completedtasks"
+                options={{
+                    title: "Completed"
+                }}
+                component={CompletedTasks}
+            />
+            <Tab.Screen
+                name="expiredTasks"
+                options={{
+                    title: "Expired"
+                }}
+                component={ExpiredTasks}
+            />
+        </Tab.Navigator>
+    );
+};
 
 const styles = StyleSheet.create({
     tabBar: {

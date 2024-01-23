@@ -16,6 +16,7 @@ router.get("/search/date", authorizeCrossServiceRequest, contorllers.searchTodoB
 
 // Get specific routes
 router.get("/todos", validateAuthorizationToken, authorizeCrossServiceRequest, contorllers.fetchAllTodos);
+router.get("/todos/count", validateAuthorizationToken, authorizeCrossServiceRequest, contorllers.getRecentTodos);
 
 // Delete sprcific routes
 router.delete("/delete", authorizeCrossServiceRequest, contorllers.deleteMany);

@@ -8,6 +8,7 @@ const { deleteMany } = require("./todo/delete/delete.controller");
 const { updateTodo } = require("./todo/update/updateTodo.controller");
 const { updateTodoStatusToCompleted } = require("./todo/update/todoStatus.controller");
 const { analysisSingleDayProgress } = require("./todo/analysis/analysisSingleDayProgress.controller");
+const { getRecentTodos } = require("./todo/fetch/getRecentTodos.controller");
 
 exports.contorllers = {
     createTodo,
@@ -19,5 +20,6 @@ exports.contorllers = {
     deleteMany,
     updateTodo,
     updateTodoStatusToCompleted,
-    analysisSingleDayProgress
+    analysisSingleDayProgress,
+    getRecentTodos
 };

@@ -2,10 +2,9 @@ import { View, MotiView, AnimatePresence } from "moti";
 import { MediumText, SmallHeadingText } from "../../../Components/Text/Headings/Headings";
 import { StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
 import { CustomSafeAreaView } from "../../../Components/SafeAreaView/SafeAreaView";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SingleTodoContainer } from "../../../Components/singleTodoContainer/singleTodoContainer";
 import { SingleTodoSkeleton } from "../../../Components/singleTodoContainer/singleTodo.skeleton";
-import { FlatList } from "react-native-gesture-handler";
 import { AuthContext } from "../../../context/auth/auth.context";
 import axios from "axios";
 import { todoServiceHost } from "../../../utils/constants/ip";
@@ -14,12 +13,13 @@ import { ServerError } from "../../../Components/Errors/ServerError";
 import { Colors } from "../../../utils/constants/colors/colors";
 import { FlashList } from "@shopify/flash-list";
 import { Icon } from "@rneui/base";
-import { infoToast, successToast } from "../../../utils/toasts/toasts";
+import { errorToast, infoToast, successToast } from "../../../utils/toasts/toasts";
 import { EmptyScreen } from "../../../Components/Errors/Empty";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { BottomSheet } from "../../../Components/BottomSheet/BottomSheetWrapper";
 import { BottomSheetHeader } from "../../../Components/BottomSheet/Header/header";
 import { fonts } from "../../../utils/constants/fonts/fonts";
+import { TouchableButton } from "../../../Components/Button/Button";
 
 export const DisplayAllTodos = () => {
     const { logoutUser, getUserDetailsWithToken } = useContext(AuthContext);
@@ -28,9 +28,10 @@ export const DisplayAllTodos = () => {
     const [snapToIndex, setSnapToIndex] = useState(-1);
     const [bottomSheetTaskDetails, setBottomSheetTaskDetails] = useState({});
 
-    console.log({ bottomSheetTaskDetails });
+    const flashListRef = useRef();
 
     const navigation = useNavigation();
+    const routes = useRoute();
 
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -74,7 +75,6 @@ export const DisplayAllTodos = () => {
             );
 
             const { isTaskUpdated, ...rest } = updateTasksFromServer.data;
-            console.log({ isTaskUpdated, rest });
             if (rest.task.count === 0) {
                 infoToast("No items to delete!", "There was no item seleted for deleting!");
                 return;
@@ -90,21 +90,19 @@ export const DisplayAllTodos = () => {
             setSelectedTask([]);
             fetchAllTasks();
         } catch (error) {
-            console.log(error.response);
+            errorToast("Something went wrong", "please try again!");
         }
     };
 
     const handleDeteleTask = async (taskId) => {
         try {
             let ids;
-            console.log({ taskId });
             if (taskId) {
                 ids = taskId;
             } else {
                 const stringTaskIds = selectedTask.join(",");
                 ids = stringTaskIds;
             }
-            // console.log({ ids });
             setDeleteLoading(true);
             const details = await getUserDetails();
             const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
@@ -130,7 +128,7 @@ export const DisplayAllTodos = () => {
             setSelectedTask([]);
             fetchAllTasks();
         } catch (error) {
-            console.log(error);
+            errorToast("Something went wrong", "please try again!");
         }
     };
 
@@ -148,8 +146,6 @@ export const DisplayAllTodos = () => {
         setSnapToIndex(1);
         setBottomSheetTaskDetails(taskDetails);
     };
-
-    console.log("Changed");
 
     const fetchAllTasks = useCallback(async () => {
         try {
@@ -181,6 +177,12 @@ export const DisplayAllTodos = () => {
         fetchAllTasks();
     }, [navigation]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            flashListRef.current?.scrollToIndex({ animated: true, index: routes.params?.toIndex, viewPosition: 0.5 });
+        }, 2000);
+    }, []);
+
     return (
         <View style={{ height: "100%" }}>
             {!loading ? (
@@ -188,7 +190,9 @@ export const DisplayAllTodos = () => {
                     <AnimatePresence>
                         {!isTasksEmpty ? (
                             <FlashList
-                                scrollEnabled={true}
+                                ref={flashListRef}
+                                // scrollEnabled={true}
+                                // initialScrollIndex={8}
                                 showsVerticalScrollIndicator={false}
                                 data={allTasks}
                                 estimatedItemSize={500}

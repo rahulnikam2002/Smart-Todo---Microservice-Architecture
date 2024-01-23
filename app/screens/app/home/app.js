@@ -32,6 +32,7 @@ import { Icon } from "@rneui/base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatePresence, MotiView } from "moti";
+import { RecentTodos } from "../../../Components/RecentTodos/RecentTodos";
 
 export const HomeScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
@@ -102,6 +103,12 @@ export const HomeScreen = () => {
                     style={{ paddingHorizontal: 15 }}>
                     <TaskProgressTracker percentage={76} />
                 </MotiView>
+            </AnimatePresence>
+
+            <AnimatePresence>
+                <View style={styles.recentTodos}>
+                    <RecentTodos />
+                </View>
             </AnimatePresence>
 
             <View
@@ -267,6 +274,10 @@ const styles = StyleSheet.create({
         bottom: 70,
         right: 20,
         zIndex: 10
+    },
+    recentTodos: {
+        paddingHorizontal: 15,
+        marginVertical: 10
     }
 });
 
