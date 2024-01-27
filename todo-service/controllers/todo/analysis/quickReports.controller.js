@@ -4,7 +4,7 @@ const { PrismaClient, Prisma } = require("@prisma/client");
 // Create an instance of PrismaClient
 const prisma = new PrismaClient();
 
-exports.analysisSingleDayProgress = async (req, res) => {
+exports.quickReports = async (req, res) => {
     try {
         const { userId } = req;
         const { date } = req.query;

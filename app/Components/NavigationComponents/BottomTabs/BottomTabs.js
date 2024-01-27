@@ -7,9 +7,33 @@ import { Image, View } from "react-native";
 import { StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../context/auth/auth.context";
 
 export const BottomTabs = () => {
+    const { getUserDetailsWithToken } = useContext(AuthContext);
+    const [userDeatils, setUserDetails] = useState({});
+
     const navigation = useNavigation();
+    const getUserDetails = async () => {
+        const details = await getUserDetailsWithToken();
+        if (!details) {
+            setUserDetails(null);
+            logoutUser();
+            return;
+        }
+        return details;
+    };
+
+    const getUserDetailsFromStore = async () => {
+        const details = await getUserDetails();
+        console.log({ details });
+        setUserDetails(details);
+    };
+
+    useEffect(() => {
+        getUserDetailsFromStore();
+    }, []);
     return (
         <View style={styles.bottomTabs}>
             <View>
@@ -64,7 +88,7 @@ export const BottomTabs = () => {
                     <Image
                         width={30}
                         height={30}
-                        source={{ uri: "https://res.cloudinary.com/dyy7ynyzb/image/upload/v1704735882/Smart%20Todo%20Application/male_aq7sbv.png" }}
+                        source={{ uri: userDeatils?.userAvatar }}
                     />
                 </TouchableOpacity>
                 {/* <SmallText sx={{ textAlign: "center" }}>Profile</SmallText> */}

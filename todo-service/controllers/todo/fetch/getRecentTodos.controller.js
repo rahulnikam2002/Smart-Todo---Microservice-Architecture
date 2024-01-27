@@ -13,16 +13,25 @@ exports.getRecentTodos = async (req, res) => {
     const { count } = req.query;
     const { userId } = req;
     console.log({ userId });
+    const date = new Date().setHours(23, 59, 59, 999);
+    const todaysDate = new Date(date);
+
     try {
         const recentResults = await prisma.todos.findMany({
             where: {
-                userId
+                userId,
+                done: false,
+                expireAt: {
+                    gte: todaysDate
+                }
+            },
+            orderBy: {
+                expireAt: "asc"
             },
             take: Number(count)
         });
 
-        const formattedResults = formartTodos(recentResults);
-        return res.status(200).send(formattedResults);
+        return res.status(200).send(recentResults);
     } catch (error) {
         const status = error.statusCode || 500;
         res.status(status).send({

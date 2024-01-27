@@ -16,7 +16,7 @@ import { SingleBannerAds, multipleBaneerAds } from "../../../Static/data/Ads/Ads
 import { SeactionHeader } from "../../../Components/Headers/SectionHeader/SeactionHeader";
 import { CircleCategory } from "../../../Components/Category/CircleCategory/CircleCategory";
 import { categoriesData } from "../../../Static/data/categories/data";
-import { ScrollView } from "react-native";
+// import { ScrollView } from "react-native";
 import { RefreshControl } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { useCallback } from "react";
@@ -29,13 +29,17 @@ import { BottomSheetHeader } from "../../../Components/BottomSheet/Header/header
 import { BottomSheetBody } from "../../../Components/BottomSheet/Body/Body";
 import { BottomSheet } from "../../../Components/BottomSheet/BottomSheetWrapper";
 import { Icon } from "@rneui/base";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { AnimatePresence, MotiView } from "moti";
 import { RecentTodos } from "../../../Components/RecentTodos/RecentTodos";
+import { TodoGroupBoxContainer } from "../../../Components/TodoGroupBoxContainer/TodoGroupBoxContainer";
 
 export const HomeScreen = () => {
+    const { getUserDetailsWithToken } = useContext(AuthContext);
+
     const [refreshing, setRefreshing] = useState(false);
+    const [userDeatils, setUserDetails] = useState({});
 
     // Bottom sheet
     const [snapToIndex, setSnapToIndex] = useState(-1);
@@ -69,6 +73,25 @@ export const HomeScreen = () => {
         return navigation.navigate("CreateProject");
     };
 
+    const getUserDetails = async () => {
+        const details = await getUserDetailsWithToken();
+        if (!details) {
+            setUserDetails(null);
+            logoutUser();
+            return;
+        }
+        return details;
+    };
+
+    const getUserDetailsFromStore = async () => {
+        const details = await getUserDetails();
+        setUserDetails(details);
+    };
+
+    useEffect(() => {
+        getUserDetailsFromStore();
+    }, []);
+
     return (
         <Animated.View style={[viewStyles, styles.homeMain]}>
             <StatusBar backgroundColor={Colors.bgBlack} />
@@ -76,7 +99,7 @@ export const HomeScreen = () => {
             <View style={{ marginBottom: 5, paddingHorizontal: 15 }}>
                 <View style={{ marginTop: 15, marginBottom: 8 }}>
                     <SmallText>
-                        Hi, <SmallText sx={{ fontFamily: fonts.Montserrat[500] }}>Rahul</SmallText> ❤️
+                        Hi, <SmallText sx={{ fontFamily: fonts.Montserrat[500] }}>{userDeatils?.userName}</SmallText> ❤️
                     </SmallText>
                     <MediumText sx={{ fontFamily: fonts.Montserrat[600] }}>Be productive today!</MediumText>
                 </View>
@@ -105,11 +128,20 @@ export const HomeScreen = () => {
                 </MotiView>
             </AnimatePresence>
 
-            <AnimatePresence>
-                <View style={styles.recentTodos}>
-                    <RecentTodos />
-                </View>
-            </AnimatePresence>
+            <View style={{ height: "55%" }}>
+                <ScrollView>
+                    <AnimatePresence>
+                        <View style={styles.recentTodos}>
+                            <RecentTodos />
+                        </View>
+                    </AnimatePresence>
+                    <AnimatePresence>
+                        <View style={styles.TodoGroupBoxContainer}>
+                            <TodoGroupBoxContainer />
+                        </View>
+                    </AnimatePresence>
+                </ScrollView>
+            </View>
 
             <View
                 style={
@@ -277,7 +309,12 @@ const styles = StyleSheet.create({
     },
     recentTodos: {
         paddingHorizontal: 15,
-        marginVertical: 10
+        marginTop: 8
+    },
+    TodoGroupBoxContainer: {
+        paddingHorizontal: 15,
+        marginTop: 8,
+        marginBottom: 15
     }
 });
 

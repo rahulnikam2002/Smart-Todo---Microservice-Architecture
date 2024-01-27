@@ -9,6 +9,7 @@ const { updateTodo } = require("./todo/update/updateTodo.controller");
 const { updateTodoStatusToCompleted } = require("./todo/update/todoStatus.controller");
 const { analysisSingleDayProgress } = require("./todo/analysis/analysisSingleDayProgress.controller");
 const { getRecentTodos } = require("./todo/fetch/getRecentTodos.controller");
+const { quickReports } = require("./todo/analysis/quickReports.controller");
 
 exports.contorllers = {
     createTodo,
@@ -21,5 +22,6 @@ exports.contorllers = {
     updateTodo,
     updateTodoStatusToCompleted,
     analysisSingleDayProgress,
-    getRecentTodos
+    getRecentTodos,
+    quickReports
 };

@@ -7,13 +7,17 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "../../utils/constants/colors/colors";
 import { SingleTodoQuickView } from "../SingleTodoQuickView/SingleTodoQuickView";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/auth/auth.context";
 import { getRecentTodos } from "../../utils/helpers/Todos/getRecentTodos";
 import { infoToast } from "../../utils/toasts/toasts";
+import { RecentTodoSkeleton } from "../Skeleton/recentTodoSkeleton";
+import { TouchableButton } from "../Button/Button";
 
 export const RecentTodos = () => {
     const { logoutUser, getUserDetailsWithToken } = useContext(AuthContext);
+    const [recentTodos, setRecentTodos] = useState([]);
+    const [isLoading, setIsLoading] = useState();
     const navigation = useNavigation();
 
     const getUserDetails = async () => {
@@ -27,10 +31,13 @@ export const RecentTodos = () => {
     };
 
     const fetchTodos = async () => {
+        setIsLoading(true);
         const { result: smartUserToken, userEmail } = await getUserDetails();
-        const todos = await getRecentTodos(5, smartUserToken, userEmail);
+        console.log({ smartUserToken });
+        const todos = await getRecentTodos(3, smartUserToken, userEmail);
+        setIsLoading(false);
         if (todos) {
-            console.log(todos.pendingTodos);
+            setRecentTodos(todos);
             return;
         }
         return infoToast("Something went wrong!", "Please try again");
@@ -55,9 +62,42 @@ export const RecentTodos = () => {
                 </TouchableOpacity>
             </View>
             <View style={styles.quickTodoContainer}>
-                {[...Array(5)].map((item, index) => (
-                    <SingleTodoQuickView key={index} />
-                ))}
+                {!isLoading > 0 ? (
+                    recentTodos?.length > 0 ? (
+                        recentTodos.map((item, index) => (
+                            <SingleTodoQuickView
+                                todoTitle={item.todoTitle}
+                                category={item.category[0]}
+                                key={index}
+                            />
+                        ))
+                    ) : (
+                        <MotiView>
+                            <MediumText
+                                color={Colors.lightBlack[1]}
+                                sx={{ fontFamily: fonts.Montserrat[400], marginBottom: 5 }}>
+                                You have no tasks pending!
+                            </MediumText>
+                            <MotiView
+                                from={{ opacity: 0, translateY: 5 }}
+                                animate={{ opacity: 1, translateY: 0 }}>
+                                <TouchableButton
+                                    title={"Create one"}
+                                    btnWidth={"100%"}
+                                    hidden={false}
+                                    txtWidth={"100%"}
+                                    onPress={() => navigation.navigate("CreateSingleTask")}
+                                />
+                            </MotiView>
+                        </MotiView>
+                    )
+                ) : (
+                    <View>
+                        <RecentTodoSkeleton />
+                        <RecentTodoSkeleton />
+                        <RecentTodoSkeleton />
+                    </View>
+                )}
             </View>
         </MotiView>
     );
@@ -70,6 +110,6 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     quickTodoContainer: {
-        marginVertical: 10
+        marginTop: 10
     }
 });

@@ -14,8 +14,6 @@ exports.fetchAllTodos = async (req, res) => {
     try {
         const { userId } = req;
 
-        console.log("User ID you received => ", { userId });
-
         const searchResults = await prisma.todos.findMany({
             where: {
                 userId

@@ -5,12 +5,12 @@ import { Colors } from "../../utils/constants/colors/colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 
-export const SingleTodoQuickView = ({ todoTitle = "This is my todo one the first number with heading", category = "Web development" }) => {
+export const SingleTodoQuickView = ({ todoTitle = "This is my todo one the first number with heading", category = "Web development", index = 0 }) => {
     const navigation = useNavigation();
     const displayTodoTitle = todoTitle.length > 30 ? todoTitle.substring(0, 30) + "..." : todoTitle;
 
     const redirectTodoScreen = () => {
-        navigation.navigate("DisplayAllTodos", { toIndex: 4 });
+        navigation.navigate("DisplayAllTodos", { toIndex: index });
     };
 
     return (
@@ -20,9 +20,9 @@ export const SingleTodoQuickView = ({ todoTitle = "This is my todo one the first
             <View style={styles.leftMain}>
                 <MediumText sx={{ fontFamily: fonts.Montserrat[600], fontSize: 14 }}>{displayTodoTitle}</MediumText>
                 <SmallText
-                    color={Colors.green.bsae}
+                    color={category ? Colors.green.bsae : Colors.lightBlack[1]}
                     sx={{ fontFamily: fonts.Montserrat[500] }}>
-                    {category}
+                    {category ? category : "Uncategorized"}
                 </SmallText>
             </View>
             <View style={styles.rightMain}>
