@@ -25,5 +25,8 @@ export const Colors = {
     },
     red: {
         base: "#ff406c"
+    },
+    blue: {
+        base: "#9980FA"
     }
 };

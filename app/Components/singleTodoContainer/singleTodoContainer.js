@@ -5,7 +5,7 @@ import { fonts } from "../../utils/constants/fonts/fonts";
 import { Icon } from "@rneui/base";
 import { IconButton } from "../Icons/Icon";
 import Checkbox from "expo-checkbox";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { ReadableDate } from "../../utils/helpers/date/readableDate";
 import { Spacer } from "../NavigationComponents/Drawer/CustomDrawer";
 const uncategorizedLabel = "Uncategorized";

@@ -39,13 +39,18 @@ export const DisplayAllTodos = () => {
     const [allTasks, setAllTasks] = useState([]);
     const [isError, setIsError] = useState(false);
 
+    const [scrollToIndex, setScrollToIndex] = useState(-1);
+
+    const scrollToTodo = () => {
+        console.log("third");
+        const todoId = routes.params?.toId;
+        if (todoId && allTasks) {
+            const index = allTasks.findIndex((item) => item.id === todoId);
+            setScrollToIndex(index);
+        }
+    };
+
     const [isTasksEmpty, setIsTasksEmpty] = useState(false);
-
-    // const [screenRenered, setScreenRendered] = useState(false);
-    // const [userDetails, setUserDetails] = useState();
-
-    // Mask as done specific
-    // const [showFloatingIcon, setShowFloatingIcon] = useState(false);
     const [selectedTask, setSelectedTask] = useState([]);
 
     const handleChecked = (taskId) => {
@@ -162,6 +167,8 @@ export const DisplayAllTodos = () => {
             setIsError(false);
             const tasks = getTasksFromServer.data.pendingTodos;
             setAllTasks(tasks);
+            console.log("first", { tasks });
+            // scrollToTodo();
             if (tasks.length === 0) return setIsTasksEmpty(true);
             return setIsTasksEmpty(false);
         } catch (error) {
@@ -178,10 +185,8 @@ export const DisplayAllTodos = () => {
     }, [navigation]);
 
     useEffect(() => {
-        setTimeout(() => {
-            flashListRef.current?.scrollToIndex({ animated: true, index: routes.params?.toIndex, viewPosition: 0.5 });
-        }, 2000);
-    }, []);
+        scrollToTodo();
+    }, [allTasks]);
 
     return (
         <View style={{ height: "100%" }}>
@@ -191,8 +196,8 @@ export const DisplayAllTodos = () => {
                         {!isTasksEmpty ? (
                             <FlashList
                                 ref={flashListRef}
-                                // scrollEnabled={true}
-                                // initialScrollIndex={8}
+                                initialScrollIndex={scrollToIndex}
+                                overScrollMode="always"
                                 showsVerticalScrollIndicator={false}
                                 data={allTasks}
                                 estimatedItemSize={500}

@@ -14,6 +14,7 @@ import { CreateProject } from "../../screens/app/createProject/createProject";
 import { BottomTabs } from "../../Components/NavigationComponents/BottomTabs/BottomTabs";
 import { DisplayAllTodos } from "../../screens/app/allTodos/allTodos.screen";
 import { AllTodosScreen } from "../../screens/app/allTodos/todos.screen";
+import { SearchScreen } from "../../screens/app/search/search.screen";
 
 const Stack = createStackNavigator();
 
@@ -24,7 +25,6 @@ export const App = () => {
     useEffect(() => {
         if (fontsLoaded) {
             setFontLoading(true);
-            console.log({ fontsLoaded });
         }
     }, [fontsLoaded]);
 
@@ -73,6 +73,19 @@ export const App = () => {
                     headerTitleStyle: { fontSize: 15, fontFamily: fonts.Montserrat[600] }
                 }}
                 component={AllTodosScreen}
+            />
+            <Stack.Screen
+                name="SearchScreen"
+                options={{
+                    gestureEnabled: true,
+                    gestureDirection: "vertical",
+                    gestureResponseDistance: 50,
+                    headerShown: true,
+                    headerTitle: "Search",
+                    cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+                    headerTitleStyle: { fontSize: 15, fontFamily: fonts.Montserrat[600] }
+                }}
+                component={SearchScreen}
             />
         </Stack.Navigator>
     ) : (

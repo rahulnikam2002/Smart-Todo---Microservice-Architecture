@@ -89,13 +89,13 @@ export const DrawerContents = ({ navigation }) => {
                         style={styles.singleMenuItem}
                         onPress={() => navigation.navigate(item.toScreen)}
                         key={index}>
-                        <Icon
+                        {/* <Icon
                             type="material"
                             name={item.icon}
                             size={20}
                             color={Colors.bgBlack}
-                        />
-                        <MediumText sx={{ marginLeft: 10, fontFamily: fonts.Montserrat[500] }}>{item.name}</MediumText>
+                        /> */}
+                        <MediumText sx={{ fontFamily: fonts.Montserrat[500] }}>{item.name}</MediumText>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -103,12 +103,12 @@ export const DrawerContents = ({ navigation }) => {
                 <TouchableOpacity
                     style={[styles.singleMenuItem, { marginBottom: 50 }]}
                     onPress={() => logoutUser()}>
-                    <Icon
+                    {/* <Icon
                         type="material"
                         name="logout"
-                    />
+                    /> */}
 
-                    <MediumText sx={{ marginLeft: 10, fontFamily: fonts.Montserrat[500] }}>Logout</MediumText>
+                    <MediumText sx={{ fontFamily: fonts.Montserrat[500] }}>Logout</MediumText>
                 </TouchableOpacity>
             </View>
         </CustomSafeAreaView>
@@ -140,20 +140,15 @@ const MenuItems = [
         name: "Todos",
         icon: "category",
         toScreen: "DisplayAllTodos"
-    },
-    {
-        name: "Planing",
-        icon: "category",
-        toScreen: "homeScreen"
-    },
-    {
-        name: "Categories",
-        icon: "category",
-        toScreen: "homeScreen"
-    },
-    {
-        name: "Settings",
-        icon: "settings",
-        toScreen: "homeScreen"
     }
+    // {
+    //     name: "Categories",
+    //     icon: "category",
+    //     toScreen: "homeScreen"
+    // },
+    // {
+    //     name: "Settings",
+    //     icon: "settings",
+    //     toScreen: "homeScreen"
+    // }
 ];

@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/auth/auth.context";
+import { infoToast } from "../../../utils/toasts/toasts";
 
 export const BottomTabs = () => {
     const { getUserDetailsWithToken } = useContext(AuthContext);
@@ -52,7 +53,7 @@ export const BottomTabs = () => {
                     size={25}
                     color={color}
                     type="ionicon"
-                    onPress={() => navigation.navigate("CreateSingleTask")}
+                    onPress={() => navigation.navigate("SearchScreen")}
                 />
                 {/* <SmallText sx={{ textAlign: "center" }}>Search</SmallText> */}
             </View>
@@ -72,7 +73,7 @@ export const BottomTabs = () => {
                     size={25}
                     color={color}
                     type="ionicon"
-                    onPress={() => navigation.navigate("cartScreen")}
+                    onPress={() => infoToast("Coming Soon!", "Hold on our team is working on that")}
                 />
                 {/* <SmallText sx={{ textAlign: "center" }}>Cart</SmallText> */}
             </View>
@@ -84,7 +85,9 @@ export const BottomTabs = () => {
                     // type="ionicon"
                     onPress={() => navigation.navigate("searchScreen")}
                 /> */}
-                <TouchableOpacity style={{ backgroundColor: "#8c7ae6", borderRadius: 50, position: "relative", top: 3 }}>
+                <TouchableOpacity
+                    onPress={() => infoToast("Coming Soon!", "Hold on our team is working on that")}
+                    style={{ backgroundColor: "#8c7ae6", borderRadius: 50, position: "relative", top: 3 }}>
                     <Image
                         width={30}
                         height={30}

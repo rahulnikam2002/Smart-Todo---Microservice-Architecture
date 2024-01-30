@@ -12,7 +12,6 @@ export const formatTime = (date, isFromWeekEnd) => {
         console.log({ originalDate });
         // Set hours, minutes, seconds, and milliseconds to the maximum values (end of the day)
         originalDate.setUTCHours(23, 59, 59, 999);
-        console.log({ originalDate });
         return originalDate;
     } else if (isFromWeekEnd === "calendar") {
         // Create a new Date object from the input date
@@ -21,8 +20,6 @@ export const formatTime = (date, isFromWeekEnd) => {
         console.log({ originalDate });
         // Set hours, minutes, seconds, and milliseconds to the maximum values (end of the day)
         originalDate.setUTCHours(23, 59, 59, 999);
-        // originalDate.setUTCHours(0, 0, 0, 0);
-        console.log({ originalDate });
         return originalDate;
     } else {
         // Create a new Date object from the input date

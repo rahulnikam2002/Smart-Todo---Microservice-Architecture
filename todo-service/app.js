@@ -11,9 +11,10 @@ app.use(validateAuthorizationToken);
 app.use("/api/todo", require("./routers/todo/todo.router"));
 app.use("/api/project", require("./routers/project/project.router"));
 app.use("/api/analysis", require("./routers/analysis/analysis.router"));
+app.use("/api/search", require("./routers/search/search.router.js"));
 
-app.listen(PORT, () => {
-    console.log("Todo service started on 6000");
-});
+// app.listen(PORT, () => {
+//     console.log("Todo service started on 6000");
+// });
 
 module.exports = app;

@@ -58,7 +58,7 @@ export const HomeScreen = () => {
     });
 
     const onRefresh = useCallback(() => {
-        console.log("refreshing");
+        // console.log("refreshing");
     }, []);
 
     const handleOpenBottomSheet = () => {
@@ -104,7 +104,7 @@ export const HomeScreen = () => {
                     <MediumText sx={{ fontFamily: fonts.Montserrat[600] }}>Be productive today!</MediumText>
                 </View>
                 <ClickSeachBar
-                    onPress={() => console.log(true)}
+                    onPress={() => navigation.navigate("SearchScreen")}
                     placeHolder="Search for tasks"
                 />
             </View>
@@ -208,7 +208,6 @@ export const HomeScreen = () => {
                 <View style={styles.speedDail}>
                     <TouchableOpacity
                         onPress={() => {
-                            console.log(1);
                             handleOpenBottomSheet();
                         }}>
                         <Icon

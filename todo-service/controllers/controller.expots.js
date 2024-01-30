@@ -1,6 +1,6 @@
 const { createTodo } = require("./todo/create/createTodo.controller");
 const { createProject } = require("./project/project.controller");
-const { searchTodoByName } = require("./todo/search/searchByName.controller");
+const { search } = require("./todo/search/search.controller");
 const { searchTodoByCategory } = require("./todo/search/searchByCategory.controller");
 const { searchTodoByDate } = require("./todo/search/searchByDate.controller");
 const { fetchAllTodos } = require("./todo/fetch/fetchAllTodos.controller");
@@ -14,7 +14,6 @@ const { quickReports } = require("./todo/analysis/quickReports.controller");
 exports.contorllers = {
     createTodo,
     createProject,
-    searchTodoByName,
     searchTodoByCategory,
     searchTodoByDate,
     fetchAllTodos,
@@ -23,5 +22,6 @@ exports.contorllers = {
     updateTodoStatusToCompleted,
     analysisSingleDayProgress,
     getRecentTodos,
-    quickReports
+    quickReports,
+    search
 };

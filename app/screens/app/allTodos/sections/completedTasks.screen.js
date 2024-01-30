@@ -25,9 +25,6 @@ export const CompletedTasks = () => {
     // Bottom sheet specific
     const [snapToIndex, setSnapToIndex] = useState(-1);
     const [bottomSheetTaskDetails, setBottomSheetTaskDetails] = useState({});
-
-    console.log({ bottomSheetTaskDetails });
-
     const navigation = useNavigation();
 
     const [loading, setLoading] = useState(false);
@@ -55,15 +52,12 @@ export const CompletedTasks = () => {
     const handleDeteleTask = async (taskId) => {
         try {
             let ids;
-            console.log({ taskId });
             if (taskId) {
                 ids = taskId;
             } else {
                 const stringTaskIds = tasksToBeDeleted.join(",");
-                console.log({ tasksToBeDeleted });
                 ids = stringTaskIds;
             }
-            // console.log({ ids });
             setDeleteLoading(true);
             const details = await getUserDetails();
             const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
@@ -89,7 +83,7 @@ export const CompletedTasks = () => {
             setTasksToBeDeleted([]);
             fetchAllTasks();
         } catch (error) {
-            console.log(error);
+            infoToast("Something went wrong!", "No worries, you can still work on!");
         }
     };
 
@@ -107,8 +101,6 @@ export const CompletedTasks = () => {
         setSnapToIndex(1);
         setBottomSheetTaskDetails(taskDetails);
     };
-
-    console.log("Changed");
 
     const fetchAllTasks = useCallback(async () => {
         try {
@@ -134,7 +126,6 @@ export const CompletedTasks = () => {
     }, []);
 
     useEffect(() => {
-        console.log("rerender");
         navigation.addListener("focus", () => {
             fetchAllTasks();
         });

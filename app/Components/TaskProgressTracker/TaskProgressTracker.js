@@ -28,6 +28,7 @@ export const TaskProgressTracker = ({ percentage }) => {
         const { result: smartToken, userEmail } = await getUserDetails();
         const todaysDate = new Date().toISOString().split("T")[0];
         const userProgress = await getTodaysProgress(smartToken, userEmail, todaysDate);
+        console.log({ userProgress });
         setUserTaskDetails(userProgress);
     };
 

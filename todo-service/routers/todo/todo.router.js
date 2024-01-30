@@ -9,11 +9,6 @@ router.post("/create", authorizeCrossServiceRequest, validation(singleTodoSchema
 router.put("/update", authorizeCrossServiceRequest, validation(updateTodoSchema), contorllers.updateTodo);
 router.put("/update/completed", authorizeCrossServiceRequest, contorllers.updateTodoStatusToCompleted);
 
-// Search specific routes
-router.get("/search/name", authorizeCrossServiceRequest, contorllers.searchTodoByName);
-router.get("/search/category", authorizeCrossServiceRequest, contorllers.searchTodoByCategory);
-router.get("/search/date", authorizeCrossServiceRequest, contorllers.searchTodoByDate);
-
 // Get specific routes
 router.get("/todos", validateAuthorizationToken, authorizeCrossServiceRequest, contorllers.fetchAllTodos);
 router.get("/todos/count", validateAuthorizationToken, authorizeCrossServiceRequest, contorllers.getRecentTodos);

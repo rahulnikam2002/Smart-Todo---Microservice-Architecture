@@ -3,25 +3,50 @@ import { MediumText, SmallText } from "../Text/Headings/Headings";
 import { Colors } from "../../utils/constants/colors/colors";
 import { fonts } from "../../utils/constants/fonts/fonts";
 import { MotiView } from "moti";
+import { Spacer } from "../NavigationComponents/Drawer/CustomDrawer";
+import { Skeleton } from "moti/skeleton";
 
-export const TodoGroupBox = ({ boxCategory, title, subTitle, percentageCompleted, theme }) => {
+export const TodoGroupBoxSkeleton = () => {
     return (
         <View style={[styles.mainContainer]}>
             <View style={styles.headerContainer}>
-                <View style={[styles.dot, { backgroundColor: theme }]}></View>
-                <SmallText sx={{ fontFamily: fonts.Montserrat[500] }}>{boxCategory}</SmallText>
+                <Skeleton
+                    colorMode="light"
+                    height={10}
+                    width={10}
+                    radius={50}
+                />
+
+                {/* <Spacer height={5} /> */}
+                <Skeleton
+                    colorMode="light"
+                    height={10}
+                    width={"50%"}
+                    radius={50}
+                />
             </View>
             <View style={styles.titleContainer}>
-                <MediumText sx={{ fontFamily: fonts.Montserrat[600], fontSize: 17 }}>{title}</MediumText>
-                <SmallText color={Colors.lightBlack[1]}>{subTitle}</SmallText>
+                <Skeleton
+                    colorMode="light"
+                    height={15}
+                    width={"100%"}
+                    radius={50}
+                />
+                <Spacer height={5} />
+                <Skeleton
+                    colorMode="light"
+                    height={10}
+                    width={"40%"}
+                    radius={50}
+                />
             </View>
             <MotiView style={styles.percentageContainer}>
                 <MotiView style={styles.background}>
                     <MotiView
                         from={{ width: "0%" }}
-                        animate={{ width: percentageCompleted }}
+                        animate={{ width: "20%" }}
                         // transition={{ duration: 0.24 /}}
-                        style={[styles.foreground, { backgroundColor: theme }]}></MotiView>
+                        style={[styles.foreground]}></MotiView>
                 </MotiView>
             </MotiView>
         </View>

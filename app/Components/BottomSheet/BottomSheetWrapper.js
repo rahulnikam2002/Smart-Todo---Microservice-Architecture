@@ -7,7 +7,6 @@ import { SCREEN_HEIGHT } from "@gorhom/bottom-sheet";
 export const BottomSheet = ({ children, snapToIndex, setSnapToIndex, snaps, pushDownToClse = false }) => {
     //   const [showBottomSheet, setShowBottomSheet] = useState(-1);
     const sheetRef = useRef(null);
-    console.log(snaps);
     const snapPoints = useMemo(() => [...snaps], []);
 
     const handleSnapPress = useCallback((index) => {
@@ -16,7 +15,6 @@ export const BottomSheet = ({ children, snapToIndex, setSnapToIndex, snaps, push
 
     // callbacks
     const handleSheetChanges = useCallback((index) => {
-        console.log(index);
         if (pushDownToClse) {
             if (index == 0) {
                 // setSnapToIndex(-1);

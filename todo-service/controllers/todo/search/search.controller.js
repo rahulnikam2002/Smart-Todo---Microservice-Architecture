@@ -10,23 +10,33 @@ const prisma = new PrismaClient();
  * @param {Object} res - The HTTP response object.
  * @returns {Promise<void>} A promise that resolves with the formatted search result or rejects with an error.
  */
-exports.searchTodoByName = async (req, res) => {
+exports.search = async (req, res) => {
     try {
         // Extract the title and userId from the request
-        const { title } = req.query;
+        const { term } = req.query;
         const { userId } = req;
 
         const searchResults = await prisma.todos.findMany({
             where: {
-                todoTitle: {
-                    contains: title,
-                    mode: "insensitive"
-                },
-                AND: {
-                    userId: userId
-                }
+                userId: userId,
+                OR: [
+                    {
+                        todoTitle: {
+                            contains: term,
+                            mode: "insensitive"
+                        }
+                    },
+                    {
+                        todoDescription: {
+                            contains: term,
+                            mode: "insensitive"
+                        }
+                    }
+                ]
             }
         });
+
+        console.log({ searchResults, term });
 
         // Format the search results into expired and pending tasks
         const formattedSearchResult = formartTodos(searchResults);

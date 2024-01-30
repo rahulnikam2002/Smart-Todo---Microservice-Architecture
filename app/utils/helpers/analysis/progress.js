@@ -4,6 +4,7 @@ import { tokens } from "../../constants/constant";
 
 export const getTodaysProgress = async (smartToken, userEmail, date) => {
     try {
+        console.log({ date });
         const serverResponse = await axios.get(`${todoServiceHost}/api/analysis/todo/date?date=${date}`, {
             headers: {
                 Authorization: tokens.authToken,
@@ -11,6 +12,7 @@ export const getTodaysProgress = async (smartToken, userEmail, date) => {
                 "user-auth-email": userEmail
             }
         });
+        console.log(serverResponse.data);
         return serverResponse.data;
     } catch (error) {
         return false;

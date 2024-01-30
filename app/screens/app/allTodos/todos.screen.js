@@ -32,8 +32,7 @@ const renderScene = ({ route }) => {
 
 export const AllTodosScreen = () => {
     const routes = useRoute();
-    const toIndex = routes.params;
-    console.log(toIndex);
+    const params = routes.params;
     return (
         <Tab.Navigator
             screenOptions={{
@@ -46,7 +45,7 @@ export const AllTodosScreen = () => {
                     title: "Pending"
                 }}
                 component={DisplayAllTodos}
-                initialParams={toIndex}
+                initialParams={params}
             />
             <Tab.Screen
                 name="completedtasks"

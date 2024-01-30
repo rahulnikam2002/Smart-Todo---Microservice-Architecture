@@ -48,7 +48,7 @@ export const RecentTodos = () => {
             fetchTodos();
         });
         fetchTodos();
-    }, [navigation]);
+    }, []);
 
     return (
         <MotiView>
@@ -68,6 +68,7 @@ export const RecentTodos = () => {
                             <SingleTodoQuickView
                                 todoTitle={item.todoTitle}
                                 category={item.category[0]}
+                                id={item.id}
                                 key={index}
                             />
                         ))

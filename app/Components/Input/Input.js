@@ -5,7 +5,7 @@ import { Colors } from "../../utils/constants/colors/colors";
 import React, { useState } from "react";
 import { View } from "react-native";
 
-export const Input = ({ placeholder, onChange, sx, onSubmit, multiline = false, value }) => {
+export const Input = ({ placeholder, onChange, sx, onSubmit, multiline = false, value, focus = false }) => {
     const { fontsLoaded, fontError } = useGoogleFonts();
     if (!fontsLoaded && !fontError) {
         return null;
@@ -19,6 +19,8 @@ export const Input = ({ placeholder, onChange, sx, onSubmit, multiline = false, 
             style={[styles.input, sx]}
             placeholder={placeholder}
             onChangeText={(text) => onChange(text)}
+            // focusable={focus}
+            autoFocus={focus}
             onSubmitEditing={() => onSubmit()}
         />
     );
