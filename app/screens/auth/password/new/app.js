@@ -37,7 +37,6 @@ export const PasswordScreen = ({ route, navigation }) => {
         if (isPasswordValid) {
             setPassword(password);
         } else {
-            // console.log("false");
             setPassword(null);
         }
     };
@@ -65,7 +64,6 @@ export const PasswordScreen = ({ route, navigation }) => {
             await handleSignIn(key, password);
             return;
         } else {
-            // console.log(first)
             if (!email || !password || !key || !userName || !userNumber) {
                 return errorToast("Incorrect credentials", "You must enter valid password");
             }

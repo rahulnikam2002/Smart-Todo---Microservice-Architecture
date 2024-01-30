@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
         SecureStore.setItemAsync("smartUserAuthToken", token).then((res) => {
             SecureStore.setItemAsync("userDetails", JSON.stringify(userDetails)).then((res) => {
-                console.log("userDetailsFromStore ===> ", res);
                 setIsLoading(false);
                 setIsLogin(true);
             });
@@ -22,7 +21,6 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
         SecureStore.setItemAsync("smartUserAuthToken", token).then((res) => {
             SecureStore.setItemAsync("userDetails", JSON.stringify(userDetails)).then((res) => {
-                console.log("userDetailsFromStore ===> ", res);
                 setIsLoading(false);
                 setIsLogin(true);
             });

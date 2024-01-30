@@ -9,30 +9,29 @@ import { useGoogleFonts } from "../Hooks/Fonts/useFonts";
 import { useState } from "react";
 
 export const Navigation = () => {
-  const { isLogin, isLoading } = useContext(AuthContext);
+    const { isLogin, isLoading } = useContext(AuthContext);
 
-  if (isLoading) {
+    if (isLoading) {
+        return (
+            <View
+                className="p-0"
+                style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%"
+                }}>
+                <ActivityIndicator
+                    size={50}
+                    color={"#000"}
+                />
+            </View>
+        );
+    }
     return (
-      <View
-        className="p-0"
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100%"
-        }}>
-        <ActivityIndicator
-          size={50}
-          color={"#000"}
-        />
-      </View>
+        <>
+            <NavigationContainer>{isLogin ? <App /> : <Auth />}</NavigationContainer>
+            <Toast />
+        </>
     );
-  }
-  return (
-    <>
-      <NavigationContainer>{isLogin ? <App /> : <Auth />}</NavigationContainer>
-      <Toast />
-      {/* <Button title="Click me" onPress={() => console.log("Hello")}/> */}
-    </>
-  );
 };

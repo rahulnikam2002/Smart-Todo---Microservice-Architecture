@@ -75,7 +75,6 @@ export const CreateSingleTask = () => {
 
     const createNewTask = async () => {
         try {
-            console.log("new");
             if (!isDataValidate) {
                 return infoToast("Invalid inputs", "Task name or End date is incorrect");
             }
@@ -107,7 +106,6 @@ export const CreateSingleTask = () => {
             setBtnLoading(false);
 
             const { isTaskCreated } = sendTaskToServer.data;
-            // console.log({ isTaskCreated });
             if (isTaskCreated) {
                 clearAllInputStates();
                 setEndDateButton("today");
@@ -119,9 +117,7 @@ export const CreateSingleTask = () => {
             }
             errorToast("Server issue", "Try adding again!");
         } catch (error) {
-            console.log(error.response);
             setBtnLoading(false);
-            // console.log(error);
             errorToast("Server issue", "Try adding again!");
         }
     };
@@ -174,8 +170,6 @@ export const CreateSingleTask = () => {
             return errorToast("Server issue", "Try adding again!");
         } catch (error) {
             setBtnLoading(false);
-            // console.log(error);
-            console.log(error.response);
             errorToast("Server issue", "Try adding again!");
         }
     };
@@ -198,7 +192,6 @@ export const CreateSingleTask = () => {
             setTodoDescription(todoDescription);
             setConfirmSelectedDate(expireAt);
             const isDataValidate = createNewSingleTaskValidation(todoName, confirmSelectedDate, todoCategories, todoDescription);
-            console.log(isDataValidate);
             setIsDataValidate(isDataValidate);
 
             setTaskId(taskId);
@@ -220,7 +213,6 @@ export const CreateSingleTask = () => {
 
     useEffect(() => {
         const isDataValidate = createNewSingleTaskValidation(todoName, confirmSelectedDate, todoCategories, todoDescription);
-        console.log("from effect", { isDataValidate });
         setIsDataValidate(isDataValidate);
     }, [todoName, confirmSelectedDate, todoCategories, todoDescription]);
 

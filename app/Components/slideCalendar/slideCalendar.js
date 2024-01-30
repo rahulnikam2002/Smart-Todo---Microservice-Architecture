@@ -33,7 +33,6 @@ export const SlideCalendar = () => {
                         <View style={{ flexDirection: "row", width: "100%" }}>
                             {weeks.map((day) => {
                                 const txt = format(new Date(day), "EEE");
-                                console.log(day);
                                 return (
                                     <View>
                                         <MediumText>{txt}</MediumText>

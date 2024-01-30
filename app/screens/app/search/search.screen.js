@@ -33,7 +33,6 @@ export const SearchScreen = () => {
             if (term.length >= 1) {
                 setLoading(true);
                 const { result: SmartUserToken, userEmail } = await getUserDetails();
-                console.log(SmartUserToken);
                 const results = await axios.get(`${todoServiceHost}/api/search?term=${term}`, {
                     headers: {
                         Authorization: tokens.authToken,
@@ -42,14 +41,12 @@ export const SearchScreen = () => {
                     }
                 });
                 setSearchResults(results.data.pendingTodos);
-                console.log(results.data.pendingTodos);
                 setLoading(false);
                 return;
             }
             setSearchResults([]);
             setLoading(false);
         } catch (error) {
-            console.log({ error: error.response });
             infoToast("Something went wrong!", "You may still work on, our team is working on the issue");
         }
     }, []);

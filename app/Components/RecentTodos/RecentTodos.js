@@ -33,7 +33,6 @@ export const RecentTodos = () => {
     const fetchTodos = async () => {
         setIsLoading(true);
         const { result: smartUserToken, userEmail } = await getUserDetails();
-        console.log({ smartUserToken });
         const todos = await getRecentTodos(3, smartUserToken, userEmail);
         setIsLoading(false);
         if (todos) {

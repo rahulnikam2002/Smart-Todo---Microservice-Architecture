@@ -22,15 +22,12 @@ export const DrawerContents = ({ navigation }) => {
         if (!details) {
             logoutUser();
             setUserDetailsLoaded(true);
-            console.log("Not in store");
             return;
         }
         setUserDetailsLoaded(true);
         setUserDetails(details);
         return;
     };
-
-    console.log(userDetailsLoaded);
 
     useEffect(() => {
         getUserDetails();

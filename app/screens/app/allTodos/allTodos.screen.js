@@ -42,7 +42,6 @@ export const DisplayAllTodos = () => {
     const [scrollToIndex, setScrollToIndex] = useState(-1);
 
     const scrollToTodo = () => {
-        console.log("third");
         const todoId = routes.params?.toId;
         if (todoId && allTasks) {
             const index = allTasks.findIndex((item) => item.id === todoId);
@@ -167,7 +166,6 @@ export const DisplayAllTodos = () => {
             setIsError(false);
             const tasks = getTasksFromServer.data.pendingTodos;
             setAllTasks(tasks);
-            console.log("first", { tasks });
             // scrollToTodo();
             if (tasks.length === 0) return setIsTasksEmpty(true);
             return setIsTasksEmpty(false);

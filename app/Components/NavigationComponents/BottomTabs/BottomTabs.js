@@ -28,7 +28,6 @@ export const BottomTabs = () => {
 
     const getUserDetailsFromStore = async () => {
         const details = await getUserDetails();
-        console.log({ details });
         setUserDetails(details);
     };
 

@@ -57,9 +57,8 @@ export const HomeScreen = () => {
         };
     });
 
-    const onRefresh = useCallback(() => {
-        // console.log("refreshing");
-    }, []);
+    // const onRefresh = useCallback(() => {
+    // }, []);
 
     const handleOpenBottomSheet = () => {
         setSnapToIndex(1);
@@ -325,7 +324,6 @@ const styles = StyleSheet.create({
                 <View style={styles.speedDail}>
                     <TouchableOpacity
                         onPress={() => {
-                            console.log(1);
                             handleOpenBottomSheet();
                         }}>
                         <Icon
