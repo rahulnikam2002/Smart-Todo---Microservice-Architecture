@@ -12,12 +12,13 @@ import { ServerError } from "../../../../Components/Errors/ServerError";
 import { Colors } from "../../../../utils/constants/colors/colors";
 import { FlashList } from "@shopify/flash-list";
 import { Icon } from "@rneui/base";
-import { infoToast, successToast } from "../../../../utils/toasts/toasts";
+import { errorToast, infoToast, successToast } from "../../../../utils/toasts/toasts";
 import { EmptyScreen } from "../../../../Components/Errors/Empty";
 import { useNavigation } from "@react-navigation/native";
 import { BottomSheet } from "../../../../Components/BottomSheet/BottomSheetWrapper";
 import { BottomSheetHeader } from "../../../../Components/BottomSheet/Header/header";
 import { fonts } from "../../../../utils/constants/fonts/fonts";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export const CompletedTasks = () => {
     const { logoutUser, getUserDetailsWithToken } = useContext(AuthContext);
@@ -33,6 +34,17 @@ export const CompletedTasks = () => {
     const [isError, setIsError] = useState(false);
 
     const [isTasksEmpty, setIsTasksEmpty] = useState(false);
+    // Confirm delete todo popup
+    const [openConfirmationPopup, setOpenConfirmationPopup] = useState(false);
+    const [isPressed, setIsPressed] = useState(false);
+
+    const handlePressIn = () => {
+        setIsPressed(true);
+    };
+
+    const handlePressOut = () => {
+        setIsPressed(false);
+    };
 
     // const [screenRenered, setScreenRendered] = useState(false);
     // const [userDetails, setUserDetails] = useState();
@@ -49,43 +61,55 @@ export const CompletedTasks = () => {
         setTasksToBeDeleted((prevIds) => prevIds.filter((id) => id !== taskId));
     };
 
-    const handleDeteleTask = async (taskId) => {
-        try {
-            let ids;
-            if (taskId) {
-                ids = taskId;
-            } else {
-                const stringTaskIds = tasksToBeDeleted.join(",");
-                ids = stringTaskIds;
-            }
-            setDeleteLoading(true);
-            const details = await getUserDetails();
-            const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
-                headers: {
-                    Authorization: tokens.authToken,
-                    "smart-auth-token": details.result,
-                    "user-auth-email": details.userEmail
-                }
-            });
-            const tasksDeleted = deleteTasksFromServer.data.count;
-            if (tasksDeleted === 0) {
-                infoToast("No items to delete!", "There was no item seleted for deleting!");
-                return;
-            }
+    const handleDeteleTask = useCallback(
+        async (taskId) => {
+            try {
+                /**
+                 * Why im hidding it before sending the delete request?
+                 * Im just trying to update the UI as fast as possible for better user experience
+                 * If any error occoured im resetting all tasks again with error toast!
+                 */
+                setAllTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
 
-            const toastMessageObject = {
-                heading: ids.length > 1 ? "Tasks deleted 👀" : "Task deleted 👀",
-                body: ids.length > 1 ? "All selected tasks was deleted successfully" : "Selected task was deleted successfully"
-            };
-            successToast(toastMessageObject.heading, toastMessageObject.body);
-            setDeleteLoading(false);
-            setSnapToIndex(-1);
-            setTasksToBeDeleted([]);
-            fetchAllTasks();
-        } catch (error) {
-            infoToast("Something went wrong!", "No worries, you can still work on!");
-        }
-    };
+                setOpenConfirmationPopup(false);
+                let ids;
+                if (taskId) {
+                    ids = taskId;
+                } else {
+                    const stringTaskIds = selectedTask.join(",");
+                    ids = stringTaskIds;
+                }
+                setDeleteLoading(true);
+                const details = await getUserDetails();
+                const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
+                    headers: {
+                        Authorization: tokens.authToken,
+                        "smart-auth-token": details.result,
+                        "user-auth-email": details.userEmail
+                    }
+                });
+                const tasksDeleted = deleteTasksFromServer.data.count;
+                if (tasksDeleted === 0) {
+                    infoToast("No items to delete!", "There was no item selected for deleting!");
+                    return;
+                }
+
+                setDeleteLoading(false);
+                setSnapToIndex(-1);
+            } catch (error) {
+                console.log(error);
+                errorToast("Something went wrong", "Please try again!");
+                setAllTasks((prev) => {
+                    if (taskId) {
+                        return [...prev, allTasks.find((task) => task.id === taskId)];
+                    } else {
+                        return prev;
+                    }
+                });
+            }
+        },
+        [getUserDetails]
+    );
 
     const getUserDetails = async () => {
         const details = await getUserDetailsWithToken();
@@ -261,7 +285,7 @@ export const CompletedTasks = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => handleDeteleTask(bottomSheetTaskDetails.taskId)}
+                            onPress={() => setOpenConfirmationPopup(true)}
                             activeOpacity={0.5}
                             style={[styles.bottomSheetBodyBtns, {}]}>
                             <MediumText
@@ -287,6 +311,56 @@ export const CompletedTasks = () => {
                     </View>
                 </BottomSheet>
             </View>
+            <AnimatePresence>
+                {openConfirmationPopup && (
+                    <MotiView
+                        from={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onTouchStart={() => setOpenConfirmationPopup(false)}
+                        style={styles.deleteTodoConfirmationPopup}>
+                        <MotiView
+                            from={{ scale: 0.9 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.9 }}
+                            transition={{ type: "spring", damping: 10, stiffness: 100 }}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            style={styles.deleteTodoConfirmationPopup_box}>
+                            <View style={styles.trashIconContainer}>
+                                <Icon
+                                    type="ionicon"
+                                    name="trash-outline"
+                                    color={Colors.red.base}
+                                />
+                            </View>
+
+                            <MediumText sx={styles.popup_title}>You are about to delete a task</MediumText>
+                            <MediumText
+                                sx={styles.popup_desc}
+                                color={Colors.lightBlack[2]}>
+                                You sure you want to delete this task? This action cannot ne undone.
+                            </MediumText>
+
+                            <TouchableWithoutFeedback
+                                onPress={() => handleDeteleTask(bottomSheetTaskDetails.taskId)}
+                                onPressIn={handlePressIn}
+                                onPressOut={handlePressOut}>
+                                <MotiView
+                                    from={{ scale: 1 }}
+                                    animate={{ scale: isPressed ? 0.95 : 1 }}
+                                    transition={{ type: "spring", damping: 10, stiffness: 100 }}
+                                    style={styles.deleteBtn}>
+                                    <MediumText
+                                        sx={styles.deleteBtn_text}
+                                        color={"white"}>
+                                        Delete
+                                    </MediumText>
+                                </MotiView>
+                            </TouchableWithoutFeedback>
+                        </MotiView>
+                    </MotiView>
+                )}
+            </AnimatePresence>
         </View>
     );
 };
@@ -323,6 +397,50 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
+    },
+    deleteTodoConfirmationPopup: {
+        position: "absolute",
+        top: 0,
+        height: "100%",
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#00000080"
+    },
+    deleteTodoConfirmationPopup_box: {
+        backgroundColor: Colors.white,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderRadius: 10,
+        width: "70%"
+    },
+    trashIconContainer: {
+        backgroundColor: Colors.red.base + "25",
+        padding: 10,
+        borderRadius: 50,
+        alignSelf: "center"
+    },
+    popup_title: {
+        fontFamily: fonts.Montserrat[600],
+        textAlign: "center",
+        marginTop: 10
+    },
+    popup_desc: {
+        fontFamily: fonts.Montserrat[500],
+        fontSize: 12,
+        textAlign: "center",
+        marginTop: 5
+    },
+    deleteBtn: {
+        backgroundColor: Colors.red.base,
+        marginTop: 15,
+        paddingVertical: 8,
+        borderRadius: 5
+    },
+    deleteBtn_text: {
+        textAlign: "center",
+        fontFamily: fonts.Montserrat[500]
     }
 });
 

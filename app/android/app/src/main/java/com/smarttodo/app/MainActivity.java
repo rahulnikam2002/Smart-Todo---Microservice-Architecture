@@ -1,4 +1,4 @@
-package com.app;
+package com.smarttodo.app;
 
 import android.os.Build;
 import android.os.Bundle;

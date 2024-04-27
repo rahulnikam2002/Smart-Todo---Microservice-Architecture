@@ -77,6 +77,8 @@ export const SignInScreen = ({ navigation }) => {
             if (status === 404) {
                 return handleSignUpRedirection();
             } else {
+                console.log({ error });
+                console.log({ res: error.response });
                 return infoToast("Server issue 👉👈", "We're sorry, but our team is working on this!");
             }
         }
@@ -110,6 +112,8 @@ export const SignInScreen = ({ navigation }) => {
             } else if (status === 400) {
                 return infoToast("Invalid data 😵", "Make sure you enter correct email id!");
             } else {
+                console.log({ error });
+                console.log({ res: error.response });
                 return infoToast("Server issue 👉👈", "We're sorry, but our team is working on this!");
             }
         }
@@ -138,7 +142,7 @@ export const SignInScreen = ({ navigation }) => {
                             color={Colors.lightBlack}
                             sx={{ fontFamily: "Montserrat_400Regular", marginTop: 10 }}>
                             Continuing will agree to our Terms and Conditions and allow{" "}
-                            <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>Plant Mart</Text> to access your{" "}
+                            <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>Smart Todo</Text> to access your{" "}
                             <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>cookies</Text> and{" "}
                             <Text style={{ fontFamily: "Montserrat_600SemiBold" }}>cache</Text> and we don't share your information or credentials
                             with anyone.

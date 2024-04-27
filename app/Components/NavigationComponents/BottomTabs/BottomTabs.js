@@ -16,6 +16,7 @@ export const BottomTabs = () => {
     const [userDeatils, setUserDetails] = useState({});
 
     const navigation = useNavigation();
+
     const getUserDetails = async () => {
         const details = await getUserDetailsWithToken();
         if (!details) {
@@ -85,7 +86,8 @@ export const BottomTabs = () => {
                     onPress={() => navigation.navigate("searchScreen")}
                 /> */}
                 <TouchableOpacity
-                    onPress={() => infoToast("Coming Soon!", "Hold on our team is working on that")}
+                    // onPress={() => infoToast("Coming Soon!", "Hold on our team is working on that")}
+                    onPress={() => navigation.navigate("userProfileScreen")}
                     style={{ backgroundColor: "#8c7ae6", borderRadius: 50, position: "relative", top: 3 }}>
                     <Image
                         width={30}

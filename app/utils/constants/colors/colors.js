@@ -21,6 +21,7 @@ export const Colors = {
     },
     green: {
         bsae: "#4caf5a",
+        light: "#E5F9E0",
         9: "#4caf5a99"
     },
     red: {
@@ -28,5 +29,11 @@ export const Colors = {
     },
     blue: {
         base: "#9980FA"
+    },
+    task: {
+        noCompletedBG: "#F5F5F5",
+        noCompletedText: "#333333",
+        completedText: "#4caf5a",
+        completedBG: "#E5F9E9"
     }
 };

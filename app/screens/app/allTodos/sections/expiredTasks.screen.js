@@ -50,43 +50,54 @@ export const ExpiredTasks = () => {
         setTasksToBeDeleted((prevIds) => prevIds.filter((id) => id !== taskId));
     };
 
-    const handleDeteleTask = async (taskId) => {
-        try {
-            let ids;
-            if (taskId) {
-                ids = taskId;
-            } else {
-                const stringTaskIds = tasksToBeDeleted.join(",");
-                ids = stringTaskIds;
-            }
-            setDeleteLoading(true);
-            const details = await getUserDetails();
-            const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
-                headers: {
-                    Authorization: tokens.authToken,
-                    "smart-auth-token": details.result,
-                    "user-auth-email": details.userEmail
-                }
-            });
-            const tasksDeleted = deleteTasksFromServer.data.count;
-            if (tasksDeleted === 0) {
-                infoToast("No items to delete!", "There was no item seleted for deleting!");
-                return;
-            }
+    const handleDeteleTask = useCallback(
+        async (taskId) => {
+            try {
+                /**
+                 * Why im hidding it before sending the delete request?
+                 * Im just trying to update the UI as fast as possible for better user experience
+                 * If any error occoured im resetting all tasks again with error toast!
+                 */
+                setAllTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
 
-            const toastMessageObject = {
-                heading: ids.length > 1 ? "Tasks deleted 👀" : "Task deleted 👀",
-                body: ids.length > 1 ? "All selected tasks was deleted successfully" : "Selected task was deleted successfully"
-            };
-            successToast(toastMessageObject.heading, toastMessageObject.body);
-            setDeleteLoading(false);
-            setSnapToIndex(-1);
-            setTasksToBeDeleted([]);
-            fetchAllTasks();
-        } catch (error) {
-            infoToast("Something went wrong!", "No worries, you can still work on!");
-        }
-    };
+                setOpenConfirmationPopup(false);
+                let ids;
+                if (taskId) {
+                    ids = taskId;
+                } else {
+                    const stringTaskIds = selectedTask.join(",");
+                    ids = stringTaskIds;
+                }
+                setDeleteLoading(true);
+                const details = await getUserDetails();
+                const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
+                    headers: {
+                        Authorization: tokens.authToken,
+                        "smart-auth-token": details.result,
+                        "user-auth-email": details.userEmail
+                    }
+                });
+                const tasksDeleted = deleteTasksFromServer.data.count;
+                if (tasksDeleted === 0) {
+                    infoToast("No items to delete!", "There was no item selected for deleting!");
+                    return;
+                }
+
+                setDeleteLoading(false);
+                setSnapToIndex(-1);
+            } catch (error) {
+                errorToast("Something went wrong", "Please try again!");
+                setAllTasks((prev) => {
+                    if (taskId) {
+                        return [...prev, allTasks.find((task) => task.id === taskId)];
+                    } else {
+                        return prev;
+                    }
+                });
+            }
+        },
+        [getUserDetails]
+    );
 
     const getUserDetails = async () => {
         const details = await getUserDetailsWithToken();

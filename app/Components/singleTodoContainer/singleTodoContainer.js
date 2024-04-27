@@ -9,6 +9,8 @@ import { useState } from "react";
 import { ReadableDate } from "../../utils/helpers/date/readableDate";
 import { Spacer } from "../NavigationComponents/Drawer/CustomDrawer";
 const uncategorizedLabel = "Uncategorized";
+import { Vibration } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export const SingleTodoContainer = ({
     taskId,
@@ -23,6 +25,7 @@ export const SingleTodoContainer = ({
     section
 }) => {
     const [isChecked, setChecked] = useState(false);
+    const navigation = useNavigation();
 
     const showReadableDate = (date) => ReadableDate(date);
 
@@ -36,8 +39,16 @@ export const SingleTodoContainer = ({
         }
     };
 
+    const handleLongPress = () => {
+        Vibration.vibrate(80);
+        openBottomSheet({ taskId, todoTitle, todoDescription, category, expireAt });
+    };
+
     return (
-        <View style={styles.container}>
+        <TouchableOpacity
+            onPress={() => navigation.navigate("SingleTodoScreen", { taskId, todoTitle, todoDescription, category, expireAt })}
+            onLongPress={handleLongPress}
+            style={styles.container}>
             <View style={styles.topContainer}>
                 <View>
                     <View>
@@ -72,11 +83,11 @@ export const SingleTodoContainer = ({
             </View>
             <View style={styles.bottomContainer}>
                 <View style={styles.stats}>
-                    <MediumText
+                    {/* <MediumText
                         sx={{ fontFamily: fonts.Montserrat[600], fontSize: 13 }}
                         color={Colors.lightBlack[1]}>
                         Today |
-                    </MediumText>
+                    </MediumText> */}
                     <MediumText sx={{ fontFamily: fonts.Montserrat[500], fontSize: 11 }}>{showReadableDate(expireAt)}</MediumText>
                 </View>
                 {!isExpired && section !== "completed" && (
@@ -93,7 +104,7 @@ export const SingleTodoContainer = ({
                     </TouchableOpacity>
                 )}
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

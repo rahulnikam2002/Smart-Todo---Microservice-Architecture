@@ -34,6 +34,7 @@ export const RecentTodos = () => {
         setIsLoading(true);
         const { result: smartUserToken, userEmail } = await getUserDetails();
         const todos = await getRecentTodos(3, smartUserToken, userEmail);
+        console.log({ todos });
         setIsLoading(false);
         if (todos) {
             setRecentTodos(todos);
@@ -67,6 +68,7 @@ export const RecentTodos = () => {
                             <SingleTodoQuickView
                                 todoTitle={item.todoTitle}
                                 category={item.category[0]}
+                                status={item.done}
                                 id={item.id}
                                 key={index}
                             />

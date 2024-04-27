@@ -2,7 +2,7 @@ import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/
 import { DrawerNavigation } from "../../Components/NavigationComponents/Drawer/Drawer";
 import { useGoogleFonts } from "../../Hooks/Fonts/useFonts";
 import { useState } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { ActivityIndicator } from "react-native";
 import { useEffect } from "react";
 import { IconButton } from "../../Components/Icons/Icon";
@@ -15,6 +15,9 @@ import { BottomTabs } from "../../Components/NavigationComponents/BottomTabs/Bot
 import { DisplayAllTodos } from "../../screens/app/allTodos/allTodos.screen";
 import { AllTodosScreen } from "../../screens/app/allTodos/todos.screen";
 import { SearchScreen } from "../../screens/app/search/search.screen";
+import { UserScreen } from "../../screens/app/user/user.screen";
+import { Icon } from "@rneui/base";
+import { SingleTodoScreen } from "../../screens/app/SingleTodo/SingleTodo.Screen";
 
 const Stack = createStackNavigator();
 
@@ -86,6 +89,33 @@ export const App = () => {
                     headerTitleStyle: { fontSize: 15, fontFamily: fonts.Montserrat[600] }
                 }}
                 component={SearchScreen}
+            />
+
+            <Stack.Screen
+                name="userProfileScreen"
+                component={UserScreen}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Profile",
+                    headerTitleStyle: {
+                        fontSize: 15,
+                        fontFamily: fonts.Montserrat[600]
+                    },
+                    headerRight: () => <Text>Hello Right!</Text>
+                }}
+            />
+            <Stack.Screen
+                name="SingleTodoScreen"
+                component={SingleTodoScreen}
+                options={{
+                    headerShown: true,
+                    headerTitle: "Task Details",
+                    headerTitleStyle: {
+                        fontSize: 15,
+                        fontFamily: fonts.Montserrat[600]
+                    }
+                    // headerRight: () => <Text>Hello Right!</Text>
+                }}
             />
         </Stack.Navigator>
     ) : (

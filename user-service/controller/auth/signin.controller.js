@@ -5,13 +5,14 @@ const { createJWT } = require("../../utils/Auth/JWT/createJWT");
 
 exports.signIn = async (req, res) => {
     try {
+        console.log("Started");
         const { userEmail } = req;
         const { userPassword: originalPassword } = req.body;
-
+        console.log("Password received");
         const isCached = await checkInRedis(userEmail);
         let isValidUser;
         let userDataFromDB;
-
+        console.log("Cached checked!", { isCached });
         let dataForJWT;
 
         if (isCached.value) {
@@ -20,12 +21,15 @@ exports.signIn = async (req, res) => {
 
             console.log("Verified passwrod from cache value ==> ", isValidUser);
             const { userPassword, userNumber, ...restData } = cachedValue;
+            console.log("Data found in cache", { userPassword, userNumber, ...restData });
             dataForJWT = restData;
         } else {
+            console.log("Not is cached");
             userDataFromDB = await userModel.findOne({ userEmail });
             isValidUser = await verifyPassword(originalPassword, userDataFromDB.userPassword);
 
             const { userPassword, userNumber, ...restData } = userDataFromDB._doc;
+            console.log("Data received from database", { userPassword, userNumber, ...restData });
             dataForJWT = restData;
         }
 

@@ -1,6 +1,6 @@
 import { View, MotiView, AnimatePresence } from "moti";
-import { MediumText, SmallHeadingText } from "../../../Components/Text/Headings/Headings";
-import { StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import { MediumText, SmallText } from "../../../Components/Text/Headings/Headings";
+import { StyleSheet, ActivityIndicator, TouchableOpacity, Text } from "react-native";
 import { CustomSafeAreaView } from "../../../Components/SafeAreaView/SafeAreaView";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { SingleTodoContainer } from "../../../Components/singleTodoContainer/singleTodoContainer";
@@ -20,18 +20,19 @@ import { BottomSheet } from "../../../Components/BottomSheet/BottomSheetWrapper"
 import { BottomSheetHeader } from "../../../Components/BottomSheet/Header/header";
 import { fonts } from "../../../utils/constants/fonts/fonts";
 import { TouchableButton } from "../../../Components/Button/Button";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export const DisplayAllTodos = () => {
     const { logoutUser, getUserDetailsWithToken } = useContext(AuthContext);
+
+    const navigation = useNavigation();
+    const routes = useRoute();
 
     // Bottom sheet specific
     const [snapToIndex, setSnapToIndex] = useState(-1);
     const [bottomSheetTaskDetails, setBottomSheetTaskDetails] = useState({});
 
     const flashListRef = useRef();
-
-    const navigation = useNavigation();
-    const routes = useRoute();
 
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
@@ -41,26 +42,38 @@ export const DisplayAllTodos = () => {
 
     const [scrollToIndex, setScrollToIndex] = useState(-1);
 
-    const scrollToTodo = () => {
+    // Confirm delete todo popup
+    const [openConfirmationPopup, setOpenConfirmationPopup] = useState(false);
+    const [isPressed, setIsPressed] = useState(false);
+
+    const handlePressIn = () => {
+        setIsPressed(true);
+    };
+
+    const handlePressOut = () => {
+        setIsPressed(false);
+    };
+
+    const scrollToTodo = useCallback(() => {
         const todoId = routes.params?.toId;
         if (todoId && allTasks) {
             const index = allTasks.findIndex((item) => item.id === todoId);
             setScrollToIndex(index);
         }
-    };
+    }, [allTasks, routes.params?.toId]);
 
     const [isTasksEmpty, setIsTasksEmpty] = useState(false);
     const [selectedTask, setSelectedTask] = useState([]);
 
-    const handleChecked = (taskId) => {
+    const handleChecked = useCallback((taskId) => {
         setSelectedTask((prevId) => [...prevId, taskId]);
-    };
+    }, []);
 
-    const handleUnChecked = (taskId) => {
+    const handleUnChecked = useCallback((taskId) => {
         setSelectedTask((prevIds) => prevIds.filter((id) => id !== taskId));
-    };
+    }, []);
 
-    const handleTaskCompeleted = async () => {
+    const handleTaskCompeleted = useCallback(async () => {
         try {
             setCompletedBtnLoading(true);
             const details = await getUserDetails();
@@ -96,47 +109,59 @@ export const DisplayAllTodos = () => {
         } catch (error) {
             errorToast("Something went wrong", "please try again!");
         }
-    };
+    }, [fetchAllTasks, getUserDetails, selectedTask]);
 
-    const handleDeteleTask = async (taskId) => {
-        try {
-            let ids;
-            if (taskId) {
-                ids = taskId;
-            } else {
-                const stringTaskIds = selectedTask.join(",");
-                ids = stringTaskIds;
-            }
-            setDeleteLoading(true);
-            const details = await getUserDetails();
-            const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
-                headers: {
-                    Authorization: tokens.authToken,
-                    "smart-auth-token": details.result,
-                    "user-auth-email": details.userEmail
+    const handleDeteleTask = useCallback(
+        async (taskId) => {
+            try {
+                /**
+                 * Why im hidding it before sending the delete request?
+                 * Im just trying to update the UI as fast as possible for better user experience
+                 * If any error occoured im resetting all tasks again with error toast!
+                 */
+                setAllTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+
+                setOpenConfirmationPopup(false);
+                let ids;
+                if (taskId) {
+                    ids = taskId;
+                } else {
+                    const stringTaskIds = selectedTask.join(",");
+                    ids = stringTaskIds;
                 }
-            });
-            const tasksDeleted = deleteTasksFromServer.data.count;
-            if (tasksDeleted === 0) {
-                infoToast("No items to delete!", "There was no item seleted for deleting!");
-                return;
+                setDeleteLoading(true);
+                const details = await getUserDetails();
+                const deleteTasksFromServer = await axios.delete(`${todoServiceHost}/api/todo/delete?tasks=${ids}`, {
+                    headers: {
+                        Authorization: tokens.authToken,
+                        "smart-auth-token": details.result,
+                        "user-auth-email": details.userEmail
+                    }
+                });
+                const tasksDeleted = deleteTasksFromServer.data.count;
+                if (tasksDeleted === 0) {
+                    infoToast("No items to delete!", "There was no item selected for deleting!");
+                    return;
+                }
+
+                setDeleteLoading(false);
+                setSnapToIndex(-1);
+                setSelectedTask([]);
+            } catch (error) {
+                errorToast("Something went wrong", "Please try again!");
+                setAllTasks((prev) => {
+                    if (taskId) {
+                        return [...prev, allTasks.find((task) => task.id === taskId)];
+                    } else {
+                        return prev;
+                    }
+                });
             }
+        },
+        [getUserDetails, selectedTask]
+    );
 
-            const toastMessageObject = {
-                heading: ids.length > 1 ? "Tasks deleted 👀" : "Task deleted 👀",
-                body: ids.length > 1 ? "All selected tasks was deleted successfully" : "Selected task was deleted successfully"
-            };
-            successToast(toastMessageObject.heading, toastMessageObject.body);
-            setDeleteLoading(false);
-            setSnapToIndex(-1);
-            setSelectedTask([]);
-            fetchAllTasks();
-        } catch (error) {
-            errorToast("Something went wrong", "please try again!");
-        }
-    };
-
-    const getUserDetails = async () => {
+    const getUserDetails = useCallback(async () => {
         const details = await getUserDetailsWithToken();
         if (!details) {
             // setUserDetails(null);
@@ -144,12 +169,12 @@ export const DisplayAllTodos = () => {
             return;
         }
         return details;
-    };
+    }, [getUserDetailsWithToken, logoutUser]);
 
-    const handleOpenBottomSheet = (taskDetails) => {
+    const handleOpenBottomSheet = useCallback((taskDetails) => {
         setSnapToIndex(1);
         setBottomSheetTaskDetails(taskDetails);
-    };
+    }, []);
 
     const fetchAllTasks = useCallback(async () => {
         try {
@@ -173,14 +198,14 @@ export const DisplayAllTodos = () => {
             setIsError(true);
             setLoading(false);
         }
-    }, []);
+    }, [getUserDetails]);
 
     useEffect(() => {
         navigation.addListener("focus", () => {
             fetchAllTasks();
         });
         fetchAllTasks();
-    }, [navigation]);
+    }, [fetchAllTasks, navigation]);
 
     useEffect(() => {
         scrollToTodo();
@@ -203,7 +228,7 @@ export const DisplayAllTodos = () => {
                                     <MotiView
                                         from={{
                                             opacity: 0,
-                                            scale: 0.95
+                                            scale: 0.9
                                         }}
                                         animate={{
                                             opacity: 1,
@@ -223,6 +248,7 @@ export const DisplayAllTodos = () => {
                                             markAsDone={handleChecked}
                                             unChecked={handleUnChecked}
                                             openBottomSheet={handleOpenBottomSheet}
+                                            openConfirmationPopup={openConfirmationPopup}
                                         />
                                     </MotiView>
                                 )}
@@ -316,7 +342,7 @@ export const DisplayAllTodos = () => {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => handleDeteleTask(bottomSheetTaskDetails.taskId)}
+                            onPress={() => setOpenConfirmationPopup(true)}
                             activeOpacity={0.5}
                             style={[styles.bottomSheetBodyBtns, {}]}>
                             <MediumText
@@ -342,6 +368,57 @@ export const DisplayAllTodos = () => {
                     </View>
                 </BottomSheet>
             </View>
+
+            <AnimatePresence>
+                {openConfirmationPopup && (
+                    <MotiView
+                        from={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onTouchStart={() => setOpenConfirmationPopup(false)}
+                        style={styles.deleteTodoConfirmationPopup}>
+                        <MotiView
+                            from={{ scale: 0.9 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0.9 }}
+                            transition={{ type: "spring", damping: 10, stiffness: 100 }}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            style={styles.deleteTodoConfirmationPopup_box}>
+                            <View style={styles.trashIconContainer}>
+                                <Icon
+                                    type="ionicon"
+                                    name="trash-outline"
+                                    color={Colors.red.base}
+                                />
+                            </View>
+
+                            <MediumText sx={styles.popup_title}>You are about to delete a task</MediumText>
+                            <MediumText
+                                sx={styles.popup_desc}
+                                color={Colors.lightBlack[2]}>
+                                You sure you want to delete this task? This action cannot ne undone.
+                            </MediumText>
+
+                            <TouchableWithoutFeedback
+                                onPress={() => handleDeteleTask(bottomSheetTaskDetails.taskId)}
+                                onPressIn={handlePressIn}
+                                onPressOut={handlePressOut}>
+                                <MotiView
+                                    from={{ scale: 1 }}
+                                    animate={{ scale: isPressed ? 0.95 : 1 }}
+                                    transition={{ type: "spring", damping: 10, stiffness: 100 }}
+                                    style={styles.deleteBtn}>
+                                    <MediumText
+                                        sx={styles.deleteBtn_text}
+                                        color={"white"}>
+                                        Delete
+                                    </MediumText>
+                                </MotiView>
+                            </TouchableWithoutFeedback>
+                        </MotiView>
+                    </MotiView>
+                )}
+            </AnimatePresence>
         </View>
     );
 };
@@ -378,6 +455,50 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between"
+    },
+    deleteTodoConfirmationPopup: {
+        position: "absolute",
+        top: 0,
+        height: "100%",
+        width: "100%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#00000080"
+    },
+    deleteTodoConfirmationPopup_box: {
+        backgroundColor: Colors.white,
+        paddingVertical: 20,
+        paddingHorizontal: 15,
+        borderRadius: 10,
+        width: "70%"
+    },
+    trashIconContainer: {
+        backgroundColor: Colors.red.base + "25",
+        padding: 10,
+        borderRadius: 50,
+        alignSelf: "center"
+    },
+    popup_title: {
+        fontFamily: fonts.Montserrat[600],
+        textAlign: "center",
+        marginTop: 10
+    },
+    popup_desc: {
+        fontFamily: fonts.Montserrat[500],
+        fontSize: 12,
+        textAlign: "center",
+        marginTop: 5
+    },
+    deleteBtn: {
+        backgroundColor: Colors.red.base,
+        marginTop: 15,
+        paddingVertical: 8,
+        borderRadius: 5
+    },
+    deleteBtn_text: {
+        textAlign: "center",
+        fontFamily: fonts.Montserrat[500]
     }
 });
 
